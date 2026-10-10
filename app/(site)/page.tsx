@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
 
 import { HomeHero } from "@/components/home/HomeHero";
+import { HomeHover } from "@/components/home/HomeHover";
+import { HomeNewsletter } from "@/components/home/HomeNewsletter";
+import {
+  BrandStory,
+  Bestsellers,
+  FeaturedCollections,
+} from "@/components/home/HomeSections";
 
 // design/pages/home.md §12: an absolute title (not templated) and the description.
-// No og:image until M8.5/M8.6. Canonical "/" waits for the domain (M8.6).
 const TITLE = "Starflames · Scented candles for starlit evenings";
 const DESCRIPTION =
   "Scented candles, travel tins, wax melts and gift sets inspired by moonlit terraces, starry reading rooms, pine forests and still mountain lakes.";
@@ -15,12 +21,21 @@ export const metadata: Metadata = {
 };
 
 /**
- * Home (home.md §2): a static Server Component. M2.2 ships the hero only; the
- * featured collections (M2.3), bestsellers (M2.4) and brand story (M2.5) follow
- * it. Until a section is on the page, the hero's CTA that jumps to it is not
- * rendered (§3.7), so in M2.2 the hero has no CTAs. The hero's entrance is CSS
- * only (globals.css), so "/" loads no motion JS in M2.2 (§9).
+ * Home (home.md §2): hero, featured collections, bestsellers, brand story and
+ * the newsletter. Static content for now (user request, 2026-10-10:
+ * components/home/home-content.ts), not yet read from the data layer. Every
+ * band is a direct child of `main` (the hero's flush end and the collapse rule
+ * read the siblings, globals.css).
  */
 export default function Home() {
-  return <HomeHero sections={{ collections: false, bestsellers: false }} />;
+  return (
+    <>
+      <HomeHero sections={{ collections: true, bestsellers: true }} />
+      <FeaturedCollections />
+      <Bestsellers />
+      <BrandStory />
+      <HomeNewsletter />
+      <HomeHover />
+    </>
+  );
 }

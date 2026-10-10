@@ -1181,3 +1181,84 @@
     opacity: var(--sf-hi);
   }
 }
+
+/* Home grids (design/pages/home.md §4.4, §5.2). Collections: 2 / 3 / 3 / 6
+   per row. Bestsellers: 2 / 2 / 4 / 4. Column gaps are --grid-gap. */
+@layer components {
+  /* Shop by type: 2 per row on phones and tablets, one row of 4 from lg. */
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    row-gap: 2rem;
+    @variant md {
+      row-gap: 2.5rem;
+    }
+    @variant lg {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .bestseller-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    row-gap: 2rem;
+    @variant lg {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+}
+
+/* The brand story aurora (components/home/HomeSections.tsx): feathered on
+   every edge so it melts into the dusk band and the bands around it, and
+   blended with `lighten`, so the image's own navy sky drops out wherever the
+   dusk gradient is lighter. Only the aurora glow and the stars remain. */
+@layer components {
+  .story-aurora {
+    mix-blend-mode: lighten;
+    mask-image:
+      radial-gradient(ellipse 70% 62% at 28% 50%, #000 0%, rgb(0 0 0 / 0.75) 40%, rgb(0 0 0 / 0.3) 68%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 35%, #000 62%, transparent 100%);
+    mask-composite: intersect;
+  }
+}
+
+/* Contact page whimsy (app/(site)/contact/page.tsx): twinkling sparks around
+   the letter, a slowly floating moon and a falling star when a note is sent.
+   All of it is off under reduced motion and html[data-motion="off"]. */
+@layer components {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-motion="off"]) .contact-spark {
+      animation: contact-twinkle 3.2s ease-in-out infinite;
+    }
+    html:not([data-motion="off"]) .contact-moon {
+      animation: contact-float 6s ease-in-out infinite;
+    }
+    html:not([data-motion="off"]) .contact-sent-star > svg {
+      animation: contact-fall 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+    }
+  }
+  .contact-sent-star::after {
+    content: "";
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 9rem;
+    height: 1px;
+    transform-origin: right center;
+    transform: rotate(-24deg);
+    background: linear-gradient(to left, rgb(232 207 150 / 0.8), transparent);
+  }
+}
+@keyframes contact-twinkle {
+  0%, 100% { opacity: 0.35; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+@keyframes contact-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(-6deg); }
+}
+@keyframes contact-fall {
+  from { opacity: 0; transform: translate(-7rem, 3rem) scale(0.6); }
+  to { opacity: 1; transform: translate(0, 0) scale(1); }
+}

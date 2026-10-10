@@ -48,7 +48,7 @@ export const BRIGHT_LEVELS = [0.45, 0.6, 0.75, 0.9] as const;
 export const FOUR_POINT_PEAK = 0.85;
 /** Constellation lines: the token's 0.35 inside a group at 0.4 (§4.3). */
 export const LINE_ALPHA = 0.35;
-export const DIM_LINE_GROUP = 0.4;
+export const DIM_LINE_GROUP = 0.7;
 /** Separation box between dim stars, in % of the sky (§14.3). */
 export const SEP_X = 2;
 export const SEP_Y = 3;
@@ -103,7 +103,7 @@ export type Pattern = {
 };
 
 /** Invented patterns (§4.3, §15), px from the top-start corner. */
-export const PATTERNS: Readonly<Record<Pattern["name"], Pattern>> = {
+const BASE_PATTERNS: Readonly<Record<Pattern["name"], Pattern>> = {
   wick: {
     name: "wick",
     w: 66,
@@ -176,6 +176,23 @@ export const PATTERNS: Readonly<Record<Pattern["name"], Pattern>> = {
       [3, 4],
     ],
   },
+};
+
+/** The background constellations drawn larger (user request, 2026-10-10). */
+export const PATTERN_SCALE = 2.2;
+
+const scalePattern = (p: Pattern): Pattern => ({
+  ...p,
+  w: p.w * PATTERN_SCALE,
+  h: p.h * PATTERN_SCALE,
+  stars: p.stars.map(([x, y]) => [x * PATTERN_SCALE, y * PATTERN_SCALE] as const),
+});
+
+export const PATTERNS: Readonly<Record<Pattern["name"], Pattern>> = {
+  wick: scalePattern(BASE_PATTERNS.wick),
+  ribbon: scalePattern(BASE_PATTERNS.ribbon),
+  sprig: scalePattern(BASE_PATTERNS.sprig),
+  drift: scalePattern(BASE_PATTERNS.drift),
 };
 
 /** Each line stops this far short of its vertex stars (§4.3). */

@@ -27,17 +27,17 @@ export type RouteEntry = {
 // One row per route, as in the footer.md §3.2.1 table.
 // prettier-ignore
 export const SITE_ROUTES: readonly RouteEntry[] = [
-  { key: "shop", label: "Shop", href: "/shop", milestone: "M3.5", live: false, footer: "explore", header: "primary" },
+  { key: "shop", label: "Shop", href: "/shop", milestone: "M3.5", live: true, footer: "explore", header: "primary" },
   { key: "collections", label: "Collections", href: "/collections", milestone: "M3.7", live: false, footer: "explore", header: "primary" },
   { key: "gift-sets", label: "Gift sets", href: "/collections/gift-sets", milestone: "M3.7", live: false, footer: "explore", header: "primary" },
-  { key: "our-story", label: "Our story", href: "/our-story", milestone: "M8.2", live: false, footer: "explore", header: "primary" },
+  { key: "our-story", label: "About", href: "/our-story", milestone: "M8.2", live: true, footer: "explore", header: "primary" },
   { key: "search", label: "Search", href: "/search", milestone: null, live: false, footer: "explore", header: "more" },
   { key: "faq", label: "FAQ", href: "/faq", milestone: "M8.2", live: false, footer: "help", header: "more" },
-  { key: "contact", label: "Contact us", href: "/contact", milestone: "M8.2", live: false, footer: "help", header: "more" },
+  { key: "contact", label: "Contact", href: "/contact", milestone: "M8.2", live: true, footer: "help", header: "primary" },
   { key: "shipping-returns", label: "Shipping & returns", href: "/shipping-and-returns", milestone: "M6.0b", live: false, footer: "help" },
   { key: "account", label: "Your account", href: "/account", milestone: "M5.7", live: false, footer: "help", header: "account" },
   { key: "sign-in", label: "Sign in", href: "/sign-in", milestone: "M5.2", live: false, footer: "help", header: "account" },
-  { key: "bag", label: "Bag", href: "/bag", milestone: "M5.4", live: false, header: "bag" },
+  { key: "bag", label: "Bag", href: "/bag", milestone: "M5.4", live: true, header: "bag" },
   { key: "privacy", label: "Privacy policy", href: "/privacy", milestone: "M2.5b", live: false, footer: "legal" },
   { key: "terms", label: "Terms & conditions", href: "/terms", milestone: "M6.0b", live: false, footer: "legal" },
 ];

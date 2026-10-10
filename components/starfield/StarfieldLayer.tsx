@@ -136,11 +136,24 @@ function linePath(p: Pattern): string {
     .join("");
 }
 
+/**
+ * Drawn larger than the placement box (user request, 2026-10-10). The layout
+ * (backings, the twinkle stars' clear areas) still uses the pattern box:
+ * scaling the pattern data itself further leaves no room for the twinkles.
+ */
+const DRAW_SCALE = 1.45;
+
 /** A constellation in its own px-sized SVG (§4.3). */
 function constellation(pattern: Pattern, dim: boolean): string {
   return tag(
     "svg",
-    { width: pattern.w, height: pattern.h, overflow: "visible", ...HIDDEN },
+    {
+      width: num(pattern.w * DRAW_SCALE),
+      height: num(pattern.h * DRAW_SCALE),
+      viewBox: `0 0 ${pattern.w} ${pattern.h}`,
+      overflow: "visible",
+      ...HIDDEN,
+    },
     tag("path", {
       class: "sf-line",
       d: linePath(pattern),
@@ -148,10 +161,10 @@ function constellation(pattern: Pattern, dim: boolean): string {
     }) +
       tag(
         "g",
-        { class: "sf-core", opacity: dim ? ".12" : ".6" },
+        { class: "sf-core", opacity: dim ? ".3" : ".75" },
         pattern.stars
           .map(([x, y]) =>
-            tag("circle", { cx: x, cy: y, r: dim ? ".75" : "1" }),
+            tag("circle", { cx: x, cy: y, r: dim ? "1.6" : "2" }),
           )
           .join(""),
       ),

@@ -244,7 +244,7 @@ Rules:
 |---|---|---|---|---|
 | `bestsellers` | home (M2.4); also the default for related products (M4.4 confirms) | always | h3 (under the section h2) | home.md §5.2: 2 / 2 / 4 / 4 |
 | `shop` | `/shop` (M3.5) | from md | the page decides (§13.1) | §5.3: 2 / 3 / 3 / 4 |
-| `collection` | `/collections/{slug}` (M3.7) | from md | the page decides | the same as `shop` |
+| `collection` | `/collections/{slug}` (M3.7) | from md | h3, under the page's "In this collection" h2 (collection.md §3.6) | the same as `shop` |
 
 The grid is a `<ul>` of `<li>`s (lists announce their counts), owned by the page or section, with `align-items: stretch`. Product grids sit on `plain` or `solid` bands only, never on haze (tokens.md §2.5 rule 3).
 

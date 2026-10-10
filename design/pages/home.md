@@ -67,7 +67,7 @@ Acceptance criteria (from the orchestrator's M2.1 task, refined):
    - a note on the flagged placeholder.
 3. **Featured collections (M2.3)** (§4): which collections, the card design, the layout per breakpoint, the data, and the **M2 state of the links**.
 4. **Bestsellers (M2.4)** (§5): the selection rule; the product card, defined here as the baseline M3.1 extends (§6); the M2 state of the bag action and the links.
-5. **Brand story (M2.5)** (§7): copy with no maker claims, an inline SVG illustration and motifs.
+5. **Brand story (M2.5)** (§7): copy with no maker claims, over the aurora background (§7.3; it replaced the inline SVG illustration on 10 Oct 2026).
 6. **Newsletter (M2.6/M2.7)** (§8): its place is reserved; in M2 it is omitted and takes no space.
 7. **Copy** (§11): every string is final and IP-checked.
 8. **Motion** per section (§9): transform and opacity only, no CLS, a static fallback under reduced motion, performance notes.
@@ -682,29 +682,20 @@ The image width is the card width minus 2 × padding: `(min-width: 90rem) 264px,
 
 | | base | md | lg | xl |
 |---|---|---|---|---|
-| Composition | stacked: illustration (centred), 32px (step 8), text | Grid 8: illustration cols 1–3, text cols 4–8 | Grid 12: illustration cols 1–5, text cols 7–12 | as lg |
-| Illustration size | **240 × 192** (scale 0.667 of the viewBox; fits the 280px content width at 320) | 100% of its column (about 249 wide, scale 0.69), 5:4 | up to 360 × 288 (scale 1), centred in its column | 360 × 288 |
+| Composition | text only, over the full-bleed aurora | Grid 8: text cols 4–8, aurora behind | Grid 12: text cols 7–12, aurora behind | as lg |
 | Vertical alignment | — | `align-items: center` | center | center |
 
-The DOM order is illustration, then text, which matches the visual order at every breakpoint. The illustration isn't focusable either way.
+The section holds only its copy; the aurora is a background layer behind it (§7.3), so there is nothing else in the DOM order and nothing focusable.
 
-### 7.3 Illustration: an inline SVG motif (the brand-story photo is on hold)
+### 7.3 Background: the aurora image (replaced the inline SVG, 10 Oct 2026)
 
-`brand-story` is not generated (art-direction.md §4.4: it implies in-house making, which the user hasn't confirmed). Using a `col-*` mood here would repeat an image already shown in the collections section. So: **an inline SVG**, `aria-hidden="true"`, `focusable="false"`, `data-decorative`, `viewBox="0 0 360 288"`, made of the brand motifs only. Sizes below are in viewBox units (= CSS px at lg/xl, scale 1):
+At the user's request the section's crescent-and-constellation SVG was removed and the band now carries a generated night-sky image, `public/images/story/story-aurora.jpg` (2688 × 1504, 16:9, about 450 KB). It is pure atmosphere, so it does **not** revive the on-hold `brand-story` shot of art-direction §4.4, which was held because a worktable scene implies in-house making. Nothing in it is attributable to the series that inspired the mood.
 
-- **A thin crescent moon:** a 2px gold-300 stroke with a 20% gold-300 fill, about 120 tall, upper start of the box, opening towards the end side.
-- **A small flame:** gold-400 fill (ember stays scarce, tokens.md §2.5 rule 1), 28 tall. It rests in the crescent's lower curve, as if the moon were holding a candle flame.
-- **One invented constellation:** the starfield's **Ribbon** pattern (starfield.md §4.3: 6 stars, a loose S), scaled 2.5×, running from the crescent's tip towards the lower end. Lines: the `constellation` role (gold-300 at 35%), 1px, stopping 3 units short of each star. Stars: moon-50 dots, **radius 1.5** (3 across), at opacity 0.9.
-- **Three four-point stars** (the `components/icons` shape, filled, no stroke): gold-300, **12 / 14 / 18** across, at the upper end, the lower start and beside the flame, at opacity 0.85.
-- Nothing else. No text, no ember, no figures.
-
-**Thin strokes at small sizes:** the SVG scales down to 0.667 at base and 0.69 at md, which would thin a 1px line to about 0.67px. So:
-
-- **Every stroked element** (the crescent's outline and the constellation lines) has **`vector-effect: non-scaling-stroke`**. The crescent stays a 2px stroke and the lines stay 1px CSS at every size.
-- **Filled shapes scale, with minimums:** the star dots render at 2.0px across at base (3 × 0.667) and 2.1px at md, never below 2px. The smallest four-point star renders at 8px at base (12 × 0.667) and 8.3px at md. The flame renders at about 19px at base. These are the minimum rendered sizes; if tech-agent's final path data makes any shape smaller than this at base, it enlarges the shape in the viewBox rather than adding a second artwork.
-- The 3-unit gap between a line and its star becomes 2px at base, which still reads as a gap.
-
-The illustration sits in its own grid area and never under or behind text. Over dusk it is decorative, so no ratio is required. Forced colors: hidden (`data-decorative`). Print: hidden.
+- **What it shows:** deep midnight navy and indigo, a soft violet and dusky-rose aurora drifting through the start-side third, fine gold constellation lines joining small four-point stars, scattered faint stars. No horizon, no objects, no figures, no text.
+- **Placement:** `next/image` with `fill` and `object-cover`, `sizes="100vw"`, at `-z-20` inside an `isolate`d, `overflow-hidden` section. It keeps its own aspect by cropping vertically; the aurora stays on the start side at every width.
+- **Decorative:** `alt=""`, `aria-hidden="true"`, `data-decorative`. Forced colors: hidden. Print: hidden. It carries no meaning the copy does not already give.
+- **Scrim (accessibility §7):** a `-z-10` layer over the image. Base: a flat `night-900` at 70%, because the copy spans the full width there. From md, a left-to-right gradient of `night-900` at 10% → 30% (32%) → 74% (58%) → 84%, so the aurora reads on the start side while the text sits on near-solid ground. Text is `moon-100` over an area that is `night-900` at 74% or more above the darkest part of the image, which clears AA comfortably.
+- The `dusk` band and its `gradient-starlight-rule` bottom edge stay as they were; the image sits above the band's gradient and below the copy.
 
 ### 7.4 States
 
