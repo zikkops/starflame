@@ -11,6 +11,47 @@ Finish the whole visual website first (every page looks and behaves right on emu
 - **Phase C — Bag, checkout & info pages, UI only (gate: full visual site review):** M5.3, M5.4 (client state + localStorage only; no Firestore sync), M5.1 (auth pages UI only), M6.2 (checkout + confirmation UI with the stubbed payment; no Cloud Function yet), M8.1, M8.2, M8.3, M8.4, M8.5, M8.6, M8.7, M8.8
 - **Phase D — Behind the scenes (later):** M5.2, M5.5, M5.6, M5.7, M6.1, M6.3, M6.4, M6.5, M6.6, M7.*, M2.5a, M2.5b, M2.6, M2.7 (need the user's privacy text), M6.0a, M6.0b (need the user's legal text), M8.8a, M8.8b, M8.9 (final full-site QA)
 
+### Phase D in depth (user request, 2026-10-10: "go deeper in everything else")
+
+Full loop and full QA rigor on every Phase D task, with no combined reviews. These tasks go deeper than the milestone definitions below. Each one adds rules tests and e2e coverage for what it touches.
+
+**D1 Accounts (M5.2, M5.6, M5.7, plus):**
+- [ ] D1.1 (T) Auth session design spec: ID token → session cookie, Server Component reads, sign-out everywhere, emulator tests
+- [ ] D1.2 (T) Email verification + password reset flows end to end (Auth emulator)
+- [ ] D1.3 (T) Account data rights: export my data, delete my account (Function + rules + order anonymisation)
+- [ ] D1.4 (T) Auth abuse limits: sign-in throttling UX, Google popup/redirect fallback on mobile in-app browsers (Instagram/Pinterest webviews)
+
+**D2 Bag (M5.5, plus):**
+- [ ] D2.1 (T) Bag sync spec: merge strategy (guest + account), conflict rules, multi-tab, rules tests
+- [ ] D2.2 (T) Server-side re-pricing and stock check of the bag on every load; handling unpublished or out-of-stock items
+- [ ] D2.3 (T) Inventory model: stock per variant, reservation at checkout, release on expiry (transactional, tested)
+
+**D3 Checkout and orders (M6.1, M6.3–M6.6, plus):**
+- [ ] D3.1 (T) Idempotency + replay tests for the checkout Function and the webhook (duplicate events, out-of-order events)
+- [ ] D3.2 (T) Order state machine doc + tests (pending → paid → fulfilled / cancelled / refunded); only Functions write orders
+- [ ] D3.3 (T) Shipping rates + tax/VAT model (stub tables, server-computed, never trusted from the client)
+- [ ] D3.4 (T) Discount/gift codes (server-validated, single-use, rules-tested), if the user wants them
+- [ ] D3.5 (T) Stripe integration behind the payment interface — **only after the user approves Stripe**
+
+**D4 Admin (M7.*, plus):**
+- [ ] D4.1 (T) Admin audit log (who changed which product/order, written by Functions)
+- [ ] D4.2 (T) Image pipeline on upload (resize/derivatives, alt text required before publish)
+- [ ] D4.3 (T) Collection management + featured/bestseller curation in admin
+
+**D5 Newsletter and legal (M2.5a/b, M2.6, M2.7, M6.0a/b):**
+- [ ] D5.1 (T) Newsletter double opt-in + unsubscribe token, rate-limited write path, duplicate-safe
+- [ ] D5.2 (D) Cookie/consent notice (only if analytics or marketing pixels are added)
+
+**D6 Hardening and launch readiness:**
+- [ ] D6.1 (T) Security review pass: rules coverage report, headers (CSP, HSTS, frame-ancestors), no secrets in bundles, dependency audit
+- [ ] D6.2 (T) Firebase App Check for Functions/Firestore (free; needs the user to approve setup on the real project)
+- [ ] D6.3 (T) Accessibility audit on every page (axe via Playwright, dev-only dependency; manual keyboard + screen reader pass)
+- [ ] D6.4 (T) Performance budgets per route (LCP/CLS/INP on emulated 4G phone), image and font audit
+- [ ] D6.5 (T) Error handling: error.tsx/global-error on every route, structured server logs; monitoring service **only with user approval**
+- [ ] D6.6 (T) Backups + data plan: Firestore export schedule, seed vs. production separation, runbook
+- [ ] D6.7 (T) Deploy plan (hosting choice, env vars, preview channels) — **ask the user before any deploy or real project**
+- [ ] D6.8 M8.9 Final full-site QA pass
+
 ## M1 Foundation
 
 - [x] M1.1 (T) Scaffold Next.js (App Router, TS strict, Tailwind, ESLint + Prettier), `.env.example`, `.gitignore`, `git init`, npm scripts

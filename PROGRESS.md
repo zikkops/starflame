@@ -567,3 +567,10 @@ Entry format:
 - Result: At the user's request, a priority block at the top of TASKS.md reorders the remaining work: Phase A home (M2.2–M2.5), Phase B shop & product (M3, M4), Phase C bag/checkout/info pages UI-only (M5.1/5.3/5.4 client-only bag, M6.2 checkout UI with the stub, M8.1–M8.8), Phase D backend (auth logic, bag sync, account/order history, checkout Functions, webhooks, email, admin, newsletter/legal pages, final QA). Screenshot gates after A, B, C. The design track writes specs ahead.
 - QA verdict: n/a
 - Notes: The user asked about speed; the faster QA mode (combined spec+build review for low-risk pages) was offered, not yet chosen, so the current rigor stays.
+
+## 2026-10-10 — Re-plan: Phase D in depth
+- Agent: orchestrator
+- Step: plan
+- Result: The user asked to "go deeper in everything else" after the visual site. Added a "Phase D in depth" block to TASKS.md (D1 accounts, D2 bag + inventory, D3 checkout/orders/state machine/shipping/tax, D4 admin audit + image pipeline, D5 newsletter double opt-in + consent, D6 hardening: security headers, App Check, axe audit, perf budgets, errors, backups, deploy plan). Full QA rigor on every Phase D task; the faster QA mode is not adopted.
+- QA verdict: n/a
+- Notes: Items needing user approval are flagged: Stripe, App Check on a real project, any monitoring service, deploy.
