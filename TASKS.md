@@ -2,6 +2,15 @@
 
 Milestone-ordered. One task at a time, through the full loop in `CLAUDE.md`. Spec owner: **D** = design-agent, **T** = tech-agent (technical spec). Stop for user review at the end of each milestone.
 
+## Priority order: visual site first (user request, 2026-10-10)
+
+Finish the whole visual website first (every page looks and behaves right on emulator data), then the backend features. Milestone sections below keep their task definitions; this list sets the ORDER. Design specs may run ahead on the design track.
+
+- **Phase A — Home (gate: home screenshots):** M2.2, M2.3, M2.4, M2.5
+- **Phase B — Shop & product (gate: catalog + product screenshots):** M3.1–M3.7, M4.1–M4.5 (M4.3 "Add to bag" uses the client-only bag store from M5.4, built first if needed)
+- **Phase C — Bag, checkout & info pages, UI only (gate: full visual site review):** M5.3, M5.4 (client state + localStorage only; no Firestore sync), M5.1 (auth pages UI only), M6.2 (checkout + confirmation UI with the stubbed payment; no Cloud Function yet), M8.1, M8.2, M8.3, M8.4, M8.5, M8.6, M8.7, M8.8
+- **Phase D — Behind the scenes (later):** M5.2, M5.5, M5.6, M5.7, M6.1, M6.3, M6.4, M6.5, M6.6, M7.*, M2.5a, M2.5b, M2.6, M2.7 (need the user's privacy text), M6.0a, M6.0b (need the user's legal text), M8.8a, M8.8b, M8.9 (final full-site QA)
+
 ## M1 Foundation
 
 - [x] M1.1 (T) Scaffold Next.js (App Router, TS strict, Tailwind, ESLint + Prettier), `.env.example`, `.gitignore`, `git init`, npm scripts

@@ -1,10 +1,15 @@
 # Home page (M2.1)
 
-Status: spec, fix round 2 applied, awaiting QA re-review. Owner: design-agent. Built by tech-agent in M2.2 (hero), M2.3 (featured collections), M2.4 (bestsellers), M2.5 (brand story). The newsletter band is reserved for M2.6/M2.7 (§8).
+Status: spec, **QA PASSED** (fix round 2), with post-pass minors 1–3 applied, plus the **hero follow-ups from M2.2** (changelog below), which await QA review. Owner: design-agent. Built by tech-agent in M2.2 (hero), M2.3 (featured collections), M2.4 (bestsellers), M2.5 (brand story). The newsletter band is reserved for M2.6/M2.7 (§8).
 
-Builds on [`layout-shell.md`](../components/layout-shell.md) (§4 Container and Grid, §5 bands and the SectionHeading pattern, §6 the header contract), [`header.md`](../components/header.md) (§8 at rest vs scrolled, §8.3 the hero images), [`footer.md`](../components/footer.md) (§2.4 the newsletter slot and the one-form rule, §3.2 the route registry and the `features` map), [`starfield.md`](../components/starfield.md) (§3.1 text inside the Container, §3.2 the 0.14 cap, §4.5 the markup rules), [`tokens.md`](../system/tokens.md) (§2.4 glows, §2.5 rules 1–9, §3 contrast, §5 arches, §9 breakpoints), [`typography.md`](../system/typography.md), [`motion.md`](../system/motion.md) (§5, §5.1 the hero-pending flow and the LCP rule, §6), [`accessibility.md`](../system/accessibility.md), [`catalog.md`](../copy/catalog.md) / [`catalog.json`](../copy/catalog.json), [`art-direction.md`](../art/art-direction.md) (§4.3, §5, §7) and [`shot-list.json`](../art/shot-list.json). Nothing here loosens those files. Where this spec is stricter, it says so.
+Builds on [`layout-shell.md`](../components/layout-shell.md) (§4 Container and Grid, §5 bands and the SectionHeading pattern, §6 the header contract), [`header.md`](../components/header.md) (§8 at rest vs scrolled, §8.3 the hero images), [`footer.md`](../components/footer.md) (§2.4 the newsletter slot and the one-form rule, §3.2 the route registry and the `features` map), [`starfield.md`](../components/starfield.md) (§3.1 text inside the Container, §3.2 the 0.14 cap, §4.5 the markup rules), [`tokens.md`](../system/tokens.md) (§2.4 glows, §2.5 rules 1–9, §3 contrast, §5 arches, §9 breakpoints), [`typography.md`](../system/typography.md), [`motion.md`](../system/motion.md) (§5, §5.1 the CSS-only hero entrance and the LCP rule, §6), [`accessibility.md`](../system/accessibility.md), [`catalog.md`](../copy/catalog.md) / [`catalog.json`](../copy/catalog.json), [`art-direction.md`](../art/art-direction.md) (§4.3, §5, §7) and [`shot-list.json`](../art/shot-list.json). Nothing here loosens those files. Where this spec is stricter, it says so.
 
 ## Changelog
+
+**Hero follow-ups from M2.2** (2026-10-10)
+
+1. **Approved tech pushback (M2.2 tech spec §1.11, PUSHBACK 1).** The hero's `padding-block-end: 0` applies only when another band follows it. While the hero is the last band before the footer (as in M2.2), it keeps `--section-y` at the bottom, because layout-shell §5.1 says the last section before the footer keeps its bottom padding. Updated in §2.3, §3.2 (the Spacing row) and §14 (the Bands bullet and e2e check 13). Nothing changes once M2.3 puts a band after the hero.
+2. **The hero entrance is CSS-only and starts at first paint** (§3.6, §9, §14; motion.md §5.1 is rewritten to match). On slow 4G with a 4× CPU slowdown, tech-agent measured the hero image painting at about 1.7 s, while the eyebrow, subcopy and CTA group stayed hidden until hydration (about 2.8 s) and finished at about 3.7 s. The `hero-pending` head script, its 2500ms timer and the GSAP hero tween are retired. A CSS keyframe animation with the same values (24px, 700ms, `--ease-enter`, 100ms stagger) now starts when the hero first renders, needs no JS, and ends visible by itself. **The hero no longer loads GSAP.** GSAP arrives in M2.3 with the section reveals, imported dynamically after `load` + idle, so it is never on `/`'s critical path. The copy, the layout and the LCP decision are unchanged.
 
 **Post-pass minors 1–3** (2026-10-10)
 
@@ -100,10 +105,11 @@ This is the order the user saw and liked in the mockup. It is kept.
 | Junction | Rule |
 |---|---|
 | Header → hero | The hero overrides its own top spacing. layout-shell §5.1: "A hero may override its own top and bottom spacing (M2.1); no other band does." It uses **24px** at base, **32px** at md, and **0 at lg+**, where the image box starts directly under the header (§3.2). |
-| Hero (solid) → collections (plain) | **The hero's bottom override, and the collapse rule as amended.** The hero sets `padding-block-end: 0` at every breakpoint, because it ends in a feathered image, not in padding (the same §5.1 sentence allows it). The two bands share bg-page, so the collapse rule applies, and layout-shell §5.1 now reads: "The collapse only removes a duplicate: if the first band already ends at 0 (a hero that overrides its bottom spacing, next point), the second keeps its top padding, so there is still exactly one `--section-y` between them." So the collections band keeps its top padding, and exactly one `--section-y` (64 / 80 / 96 / 128px) separates the bottom of the image box from the collections heading. **Build:** the M1.13 collapse selector (`:is(plain, solid) + :is(plain, solid)` drops `padding-block-start`) must skip a band that follows a flush-ending band, for example by marking the hero `data-flush-end` and excluding the band after it from the selector (tech-agent's call; the layout-shell §5.1 build note, §14). |
+| Hero (solid) → collections (plain) | **The hero's bottom override, and the collapse rule as amended.** The hero sets `padding-block-end: 0` when another band follows it, because it then ends in a feathered image, not in padding (the same §5.1 sentence allows it). **The hero's `padding-block-end: 0` applies only when another band follows it; while it is the page's last band before the footer (M2.2), it keeps `--section-y` at the bottom (layout-shell §5.1: the last section before the footer keeps its bottom padding).** The two bands share bg-page, so the collapse rule applies, and layout-shell §5.1 now reads: "The collapse only removes a duplicate: if the first band already ends at 0 (a hero that overrides its bottom spacing, next point), the second keeps its top padding, so there is still exactly one `--section-y` between them." So the collections band keeps its top padding, and exactly one `--section-y` (64 / 80 / 96 / 128px) separates the bottom of the image box from the collections heading. **Build:** the M1.13 collapse selector (`:is(plain, solid) + :is(plain, solid)` drops `padding-block-start`) must skip a band that follows a flush-ending band, for example by marking the hero `data-flush-end` and excluding the band after it from the selector (tech-agent's call; the layout-shell §5.1 build note, §14). The flush end must switch itself off when no band follows (tech-agent's M2.2 rule `[data-flush-end]:not(:has(~ [data-band]))` does this). |
 | Collections (plain) → bestsellers (plain) | Collapse: bestsellers has `padding-block-start: 0`, so exactly one `--section-y` separates them. (If the collections section is omitted, §4.6, bestsellers follows the hero directly and keeps its top padding by the same amended rule.) |
 | Bestsellers (plain) → brand story (dusk) | Both paddings stay (different colours). |
 | Brand story (dusk) → footer (M2) / newsletter (later) | Both paddings stay. The footer adds its own top padding (footer.md §4.1). |
+| Hero → footer (M2.2 only, while the hero is the last band) | The hero keeps `--section-y` at the bottom (64 / 80 / 96 / 128px), so the feathered image fades into bg-page before the footer's bg-sunken edge, never directly onto it. The footer adds its own top padding. |
 
 ### 2.4 Page diagrams
 
@@ -172,11 +178,11 @@ This is the order the user saw and liked in the mockup. It is kept.
   <div class="HeroGrid">                                   Container at base/md; see §3.2 for lg+
     <div class="HeroText">
       <hgroup>
-        <p class="type-eyebrow" data-hero-reveal>…</p>
-        <h1 id="hero-heading" class="type-display-1">…</h1>  NOT pre-hidden (§3.6)
+        <p class="type-eyebrow" data-hero-reveal>…</p>      reveal order 0 (§3.6)
+        <h1 id="hero-heading" class="type-display-1">…</h1>  NOT animated (§3.6)
       </hgroup>
-      <p class="type-body-lg" data-hero-reveal>…</p>
-      <div class="HeroActions" data-hero-reveal>
+      <p class="type-body-lg" data-hero-reveal>…</p>        reveal order 1
+      <div class="HeroActions" data-hero-reveal>            reveal order 2
         <a href="#bestsellers" class="Button primary">Shop favorites</a>
         <a href="#collections" class="TextLink">Explore collections <svg arrow aria-hidden/></a>
       </div>
@@ -204,7 +210,7 @@ This is the order the user saw and liked in the mockup. It is kept.
 | Crop (`object-fit: cover`) | `object-position: 50% 80%`: removes about 16% of the height at the top (calm sky; the small crescent goes) and 4% at the bottom | `object-position: 100% 50%`: shows the right 75% of the photo (trims the empty left 25%) | `object-position: 100% 50%`: shows the right 70.3% (trims the left 29.7%) | same |
 | Box size | 390 × 390 | 768 × 576 | 581 × 465 at 1024 | 814 × 651 at 1440; grows to 960 × 768 at about 1733; stays 960 × 768 above that |
 | Candle in the box (from the real photo: x 52–74%, centre x 60%, y 57%; mobile body centre x 50%, y 54%) | centre x 50%, y 47.5% | centre x 46.7%, y 57% | centre x 43.1%, y 57% (body spans x 31.7–63%) | same |
-| Spacing | top 24 (step 6); text → image 32 (step 8); bottom 0 | top 32; text → image 32; bottom 0 | padding-block 0; the band's block size is the image box's height (or the text's, if taller); `align-items: center` | same |
+| Spacing | top 24 (step 6); text → image 32 (step 8); bottom 0 when another band follows, `--section-y` while the hero is the last band (§2.3) | top 32; text → image 32; bottom as base | padding-block-start 0; padding-block-end as base; the band's content height is the image box's height (or the text's, if taller); `align-items: center` | same |
 | CTAs (`HeroActions`: `display: flex; flex-wrap: wrap; align-items: center; gap: 2rem`, step 8 in both directions) | primary full width (min-height 48); the text link wraps below it, **32px** (step 8) under it (44 tall) | primary auto width (min-height 48); text link on the same row, **32px** after it | as md (min-height 48). If the row doesn't fit the 379px column, the link wraps below with the same 32px gap | as md |
 
 - **The capped box (the end edge from about 1733px).** Above 1440 the Container centres at 1280, so its content box starts at `50vw − 640px`, and the col-6 line sits five columns and five gaps further on (5 × 77.33 + 5 × 32 = 546.7px), at `50vw − 93.3px`. The box would be `50vw + 93.3px` wide. It reaches the 60rem (960px) cap at 2 × (960 − 93.3) ≈ **1733px**. From there the box **stays anchored at its start edge** (the col-6 line, 32px after the text column), so the text-to-image gap, the glow's clearance from the text and the candle's place next to the heading never change. Its **end edge stops short of the viewport** by `50vw + 93.3px − 960px`: about **93px at 1920** and **413px at 2560** (QA's 414 rounds the 93.3px offset up to 94). That strip is plain bg-page, and the box's end feather (opaque 92% → transparent 100%, §3.3) already fades the photo into it, so there is no hard edge. The image is not stretched or recentred.
@@ -271,7 +277,7 @@ The photo's edges already fall off to near night-900. A CSS mask on `.HeroImage`
 
 ### 3.6 Entrance motion (motion.md §5.1) and the LCP rule
 
-**LCP decision: option (b) at every breakpoint. The h1 is never pre-hidden.** Only the eyebrow, the subcopy and the CTA group carry `data-hero-reveal`. The image and the glow are visible from the first paint.
+**LCP decision: option (b) at every breakpoint. The h1 is never animated.** Only the eyebrow, the subcopy and the CTA group carry `data-hero-reveal`. The image and the glow are visible from the first paint.
 
 Areas, for the build review (option (a) would also hold, but (b) removes the risk on short phones):
 
@@ -280,16 +286,33 @@ Areas, for the build review (option (a) would also hold, but (b) removes the ris
 | 390 | 390 × 390 = **152,100 px²** | 390 × 173 = **67,470** at 664 tall; the whole box at 844 | 350 × 92 = **32,200** | 350 × 86 ≈ 30,100 (3 lines) |
 | 1440 | 814 × 651 = **529,914 px²** | all of it | 514 × 168 ≈ 86,350 | 514 × 64 ≈ 32,900 (2 lines) |
 
-The image is the expected LCP element at both widths. Whatever the build review measures, nothing that could be the LCP element is pre-hidden.
+The image is the expected LCP element at both widths. Whatever the build review measures, nothing that could be the LCP element is ever at opacity 0.
+
+**Decision (hero follow-ups from M2.2): a CSS-only entrance that starts at first paint** (option (c) of the M2.2 follow-up). It replaces the `hero-pending` head script, the 2500ms timer and the GSAP tween.
+
+Why: tech-agent measured, on slow 4G with a 4× CPU slowdown, the image painting at about 1.7 s while the JS-driven text waited for hydration (about 2.8 s) and finished at about 3.7 s. A CSS animation starts with the first paint, so the message and the CTAs finish arriving about 0.9 s after the hero first shows, whatever the JS is doing, and the plain `<a>` CTAs work before hydration. On a fast connection it looks exactly as before (the same 24px, 700ms, `--ease-enter` and 100ms stagger), and it can't be left hidden if JS fails, because it ends visible by itself. It also removes GSAP from the hero entirely (M2.2 loads none; §9). Options (a) and (b) were set aside: (a) would split the hero into two behaviours and still leave the eyebrow and subcopy waiting on JS, and (b) would race hydration on mid-range phones (the entrance would play on some loads and be skipped on others) and still wait on a timer, not on the paint.
 
 | Step | What happens |
 |---|---|
-| Head script (exists, M1.11) | Under `prefers-reduced-motion: no-preference` it adds `hero-pending` to `<html>`, with the 2500ms fallback timer. CSS: `.hero-pending [data-hero-reveal] { opacity: 0 }`. |
-| Hydration (`gsap.matchMedia()`, `no-preference` branch only) | If `hero-pending` is already gone, skip. Otherwise: `gsap.set(targets, { opacity: 0, y: 24 })`, remove `hero-pending`, then `gsap.to(targets, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", stagger: 0.1 })`. Targets, in DOM order: eyebrow, subcopy, CTA group (3 targets; the spread is 0.2s, under the 0.4s cap). Values come from the motion constants (`--motion-distance-lg`, `--duration-slower`, `--ease-enter`, `--stagger-loose`). |
-| What moves | Only `opacity` and `transform` on those three elements. Their space is reserved by normal layout, so there is no shift. |
-| Reduced motion | No class, no timer, no entrance: everything is visible at first paint (motion.md §6.2). |
-| `html[data-motion="off"]` (the M8.8b hook from M1.19) | Treated like reduced motion: the island skips the entrance and removes `hero-pending` if it is present. |
-| No JS | The class is never added; everything is visible. |
+| Server HTML | The eyebrow, the subcopy and the CTA group carry `data-hero-reveal` and a reveal order in DOM order: **0, 1, 2** (`--reveal-order`, set by the server as an inline custom property or a class; tech-agent's call). On `/` in M2.2, where the hero has no CTAs yet, the targets are the eyebrow (0) and the subcopy (1). |
+| First paint (`prefers-reduced-motion: no-preference`, and `<html>` without `data-motion="off"`) | The global stylesheet's `hero-reveal` keyframes run once on each target: `opacity 0 → 1`, `translateY(var(--motion-distance-lg)) → none` (24px), `animation-duration: var(--duration-slower)` (700ms), `animation-timing-function: var(--ease-enter)` (`cubic-bezier(0.165, 0.84, 0.44, 1)`), `animation-fill-mode: backwards`, `animation-delay: calc(var(--reveal-order) * var(--stagger-loose))` (0 / 100 / 200ms; the 200ms spread is under the 400ms cap). The whole entrance takes **0.9 s from the hero's first paint**. The exact CSS is in motion.md §5.1. |
+| Hydration | Nothing. No client code touches the hero. Hydration reuses the server DOM, so the animation doesn't restart. |
+| What moves | Only `opacity` and `transform` on those targets. Their space is reserved by normal layout, so there is no shift. After the animation ends, no inline style, `will-change` or fill state remains. |
+| Reduced motion | No animation is declared: everything is visible at first paint (motion.md §6.2). |
+| `html[data-motion="off"]` (the M8.8b hook from M1.19) | Excluded by the selector, so no entrance. M8.8b sets the attribute from the stored preference before first paint. If it is switched on after the hero has painted, the entrance has already finished. |
+| No JS, or the JS fails | The same as with JS: the animation runs and ends visible. |
+| A client-side navigation back to `/` | The hero is inserted fresh and plays its entrance once, from its first paint in that view (never a flash). A back/forward-cache restore doesn't replay it. |
+
+Expected timing (the build review records the real figures):
+
+| Profile | Before (head script + GSAP, measured in M2.2) | Now (CSS) |
+|---|---|---|
+| Slow 4G, 4× CPU (390) | image ≈ 1.7 s; text hidden until ≈ 2.8 s, done ≈ 3.7 s | the text starts at the hero's first paint (FCP) and is done by FCP + 0.9 s; the image (LCP) is unchanged |
+| Fast 4G, 2× CPU | the entrance started at ≈ 0.8 s | starts at FCP |
+| Desktop | ≈ 0.2 s | starts at FCP |
+
+- **Build-review acceptance:** on tech-agent's slow-4G / 4× CPU probe at 390 (`/dev/hero`, which has the CTA group), the last reveal target's `animationend` is at most **FCP + 1.0 s**; the LCP element is still the hero `<img>`; CLS is 0.
+- The CTA group is hit-testable throughout (opacity doesn't block taps), and the plain fragment links need no JS.
 
 The image doesn't zoom or animate on hover (it isn't interactive).
 
@@ -707,7 +730,7 @@ All motion follows motion.md: only `transform` and `opacity` animate, nothing mo
 
 | Section | What moves | Trigger | Values | Reduced motion |
 |---|---|---|---|---|
-| Hero | eyebrow, subcopy, CTA group (not the h1, not the image, not the glow) | page load, the hero-pending flow (§3.6) | `opacity 0→1`, `y 24→0`, `--duration-slower` (0.7s), `--ease-enter` (`power3.out`), stagger 0.1 | no entrance; visible at first paint |
+| Hero | eyebrow, subcopy, CTA group (not the h1, not the image, not the glow) | **the hero's first paint, CSS only** (the `hero-reveal` keyframes, §3.6, motion.md §5.1); no JS | `opacity 0→1`, `translateY(24px)→none`, `--duration-slower` (700ms), `--ease-enter` (`cubic-bezier(0.165, 0.84, 0.44, 1)`), `animation-delay` = reveal order × `--stagger-loose` (0 / 100 / 200ms), fill `backwards` | no animation declared; visible at first paint |
 | Collections | (1) the SectionHeading block as one target; (2) the cards | ScrollTrigger on the section, `start: "top 85%"`, `once: true` | `opacity 0→1`, `y 16→0`, `--duration-slower`, `--ease-enter`; cards `stagger: { amount: Math.min(0.4, (n - 1) * 0.06) }`, the cards starting 0.1s after the heading | instant, no pre-hidden state |
 | Bestsellers | the heading block, then the cards | the same | the same | instant |
 | Brand story | the illustration, then the text block (eyebrow, h2, paragraphs as one target) | the same | the illustration: `opacity 0→1` only; the text: `opacity 0→1`, `y 16→0` | instant |
@@ -716,7 +739,8 @@ All motion follows motion.md: only `transform` and `opacity` animate, nothing mo
 
 Rules:
 
-- **Pre-hidden states are set only in the `no-preference` branch of `gsap.matchMedia()`, and only for sections whose start line is still below the viewport at hydration.** A section already past `top 85%` when the page hydrates (a reload mid-page, or arriving via `#bestsellers`) is left visible and gets no trigger (motion.md §5).
+- **The hero is the one CSS-driven entrance** (motion.md §1, §5.1). It is declared only under `prefers-reduced-motion: no-preference` and outside `html[data-motion="off"]`, starts at first paint and ends visible without JS. No script reads or writes the hero's reveal targets.
+- **Section-reveal pre-hidden states are set only in the `no-preference` branch of `gsap.matchMedia()`, and only for sections whose start line is still below the viewport when the reveal code sets up** (after `load` + idle, see Performance). A section already past `top 85%` at that moment (a reload mid-page, arriving via `#bestsellers`, or a visitor who scrolled before the code loaded) is left visible and gets no trigger (motion.md §5).
 - `html[data-motion="off"]` (the M8.8b hook) skips every reveal and the hover zoom, exactly like reduced motion. If the preference changes mid-session, `gsap.matchMedia()` reverts the inline styles, so nothing stays hidden.
 - No ScrollTrigger `scrub` or `pin`, no parallax, no animated masks or `box-shadow`, no SVG line-drawing (that would animate `stroke-dashoffset`, which isn't transform or opacity). The brand-story illustration simply fades in.
 - No ambient loops on home beyond the starfield (no glow breathing, no twinkle in the illustration). This keeps M8.8b's pause control simple.
@@ -724,11 +748,12 @@ Rules:
 
 **Performance (@perf):**
 
-- One client island, `HomeMotion` (name tech-agent's call). It imports `gsap` core for the hero entrance, which must run early to beat the 2500ms fallback. It then **dynamically imports `ScrollTrigger` after the entrance has started (or after `load` + idle if there is no entrance)** and registers it once.
+- **The hero needs no JS** (§3.6). In **M2.2, `/` loads no GSAP and no motion island**: the first-load JS stays at the M1 baseline, give or take shared-chunk churn, and the build review records it.
+- **From M2.3**, one client island, `HomeMotion` (name tech-agent's call), runs the section reveals. It loads `gsap` core and `ScrollTrigger` with a **dynamic `import()` after the `load` event plus idle** (`requestIdleCallback` with a timeout of about 2 s, or a `setTimeout` fallback where it is missing), registers ScrollTrigger once, and sets up the three triggers. So GSAP is never part of `/`'s first-load JS and never competes with the hero image on a slow phone.
 - Three triggers in total, each `once: true`, so each is killed after it fires.
 - No scroll listeners of its own. No work while the tab is hidden (GSAP's ticker already sleeps).
 - GSAP is not imported by the root layout or any shared component. Home is the only route that loads it in M2.
-- The build review records: the home route's first-load JS against the M1 baseline, the LCP element and its time at 390 and 1440 under Lighthouse mobile throttling, and CLS.
+- The build review records: the home route's first-load JS against the M1 baseline, the LCP element and its time at 390 and 1440 under Lighthouse mobile throttling, the hero's FCP and its last `animationend` on the slow-4G probe (§3.6), and CLS.
 
 ---
 
@@ -814,6 +839,7 @@ Notes:
 - **The candle glow under text:** none (§3.4).
 - **The CTA glow:** its footprint holds only the CTA's own ring and the bottom strip of the text-secondary subcopy, over solid bg-page (tokens.md §2.5 rule 9). The text link and its ring sit outside it (32px gap, ring at 28px). It never overlaps the hero candle glow: at lg+ the CTA sits in the text column, and the candle glow starts ≥ 100px into the image box; at md it ends 6px above the image box, and the candle glow starts 98px into it.
 - **No new colour pairs** beyond tokens.md §3 and starfield.md §3.2, except the two over-bg-page glow composites worked out above, which are above their tabled family floors.
+- **During the hero entrance** the eyebrow, subcopy and CTA group pass through partial opacity for at most 0.9 s from first paint. That is a transition, not a resting state, so the ratios above are judged at rest (opacity 1), as for every other fade.
 
 ### 10.6 Zoom, reflow, text spacing
 
@@ -919,10 +945,10 @@ Notes:
 
 ## 14. Implementation notes for tech-agent (M2.2–M2.5)
 
-- **Dependency (M2.2):** GSAP is in the stack but not yet installed. M2.2 adds `gsap` (ScrollTrigger ships inside it) to `package.json`, lists it in `PROGRESS.md`, and records its `allowScripts` decision if npm asks (it has no install script at the time of writing; check the installed version).
+- **Dependency (moved from M2.2 to M2.3):** the hero no longer needs GSAP (§3.6), so **M2.2 adds no dependency**. M2.3 adds `gsap` (ScrollTrigger ships inside it) with the first section reveals, lists it in `PROGRESS.md`, and records its `allowScripts` decision if npm asks (tech-agent found no install script in 3.15.0).
 - **Route:** `app/(site)/page.tsx` replaces the placeholder. It is a Server Component with **static rendering**: no `searchParams`, cookies or headers, and no `export const revalidate` (the repositories use `revalidate: false`). It is revalidated on demand: the page inherits the `products` and `collections` cache tags from the two reads, so M7's `updateTag` / `revalidateTag` refreshes it.
 - **Build preflight hand-off:** **M2.3 is the first task that calls a repository from a page, so M2.3 enables `scripts/build-preflight.mjs` in `prebuild`** (TASKS M2.3, M1.8 hand-off). M2.4 then has nothing to enable. Always build with `npm run build` or `npm run test:e2e` (M1.6).
-- **Components** (names are tech-agent's call): `HomeHero`, `CollectionGrid` / `CollectionCard`, `BestsellerGrid`, `ProductCard` (the §6 baseline, in `components/catalog/` so M3.2 extends it; with an optional pinned-badge prop, §6.2), `BrandStory` (with the inline SVG as a component), `HomeMotion` (the single client island, §9). Everything except `HomeMotion` is a Server Component. No component imports Firestore.
+- **Components** (names are tech-agent's call): `HomeHero`, `CollectionGrid` / `CollectionCard`, `BestsellerGrid`, `ProductCard` (the §6 baseline, in `components/catalog/` so M3.2 extends it; with an optional pinned-badge prop, §6.2), `BrandStory` (with the inline SVG as a component), `HomeMotion` (the single client island for the section reveals, from M2.3, §9). Everything except `HomeMotion` is a Server Component. No component imports Firestore.
 - **Registry:** add `"product-pages": { milestone: "M4.3", live: false }` to `features` in `components/layout/site-routes.ts` (footer.md §3.2.2 gains this row; design-agent updates footer.md at its next edit). The card components take an `interactive` boolean from the flag; with `false` they render no `<a>`, no hover classes and no cursor change. Section links come from the registry rows (`collections`, `shop`, `our-story`), rendered only when `live`.
 - **Hero layout:**
   - The eyebrow and h1 inside an `<hgroup>` (§3.1).
@@ -934,7 +960,13 @@ Notes:
   - Check the Next 16.4 docs (`node_modules/next/dist/docs`) for the current `priority` / `preload` guidance with `getImageProps`. Preload the mobile source only, if at all.
   - `object-position` per breakpoint by CSS (§3.2). The box `aspect-ratio` per breakpoint by CSS; the `<img>` is `size-full object-cover`.
   - The mask by CSS, both prefixed and unprefixed (§3.3). The glow is a sibling behind the image (§3.4), sized by §3.4's table, not by shot-list.json's older `glowPlacement` note (superseded, see art-direction.md §4.3).
-- **Hero entrance:** use the existing `hero-pending` head script and `[data-hero-reveal]`. **Don't add `data-hero-reveal` to the h1 or the `hgroup`.** In the `no-preference` branch, follow motion.md §5.1 step 3 exactly.
+- **Hero entrance (CSS only, §3.6, motion.md §5.1):**
+  - Put the `hero-reveal` keyframes and the `[data-hero-reveal]` rule in the global stylesheet (render-blocking, so they apply at first paint), inside `@media (prefers-reduced-motion: no-preference)` and scoped to `html:not([data-motion="off"])`. Use the exact CSS in motion.md §5.1.
+  - Set the reveal order (0, 1, 2 in DOM order) on the targets from the server (`--reveal-order` inline, or classes). **Don't add `data-hero-reveal` to the h1, the `hgroup`, the image or the glow.**
+  - **Retire** the M1.11 `hero-pending` head script, its 2500ms timer and the `.hero-pending [data-hero-reveal]` rule, with their tests (motion.md §5.1, "Retired"). Keep `suppressHydrationWarning` on `<html>` only if another head script still changes `<html>` before hydration.
+  - No client code touches the hero. Keep `HomeHero` a Server Component with deterministic markup: a hydration mismatch in the hero would re-create it and replay the entrance after it had shown.
+  - No `will-change`. After the animation, nothing inline remains.
+  - Screenshots: Playwright's `animations: "disabled"` fast-forwards finite CSS animations to their end, so the hero needs no special wait in `captureRoute` (the M2.2 `heroSettled` helper can wait for `animationend` or be dropped; tech-agent's call).
 - **Collection images:** `next/image` `fill` inside the 3:4 arch box, the §4.4 `sizes`, lazy. `src` and `alt` come from `collection.moodImage` (`/images/collections/...`, served from `/public`). tech-agent may map `moodImage.src` to a static import for blur placeholders (optional); `moodImage.width` / `height` are available if a non-`fill` render is ever needed.
 - **Product images:** Storage URLs through the existing `remotePatterns`, `fill` inside the 4:5 arch box, the §6.5 `sizes`, lazy.
 - **Type:** taglines and short descriptions use `type-body`, not `type-body-sm` (§4.3, §6.1), with `text-wrap: pretty`.
@@ -942,8 +974,8 @@ Notes:
 - **Brand-story SVG:** `vector-effect: non-scaling-stroke` on every stroked element; the minimum rendered sizes in §7.3; base size 240 × 192.
 - **Starfield markup rules** (starfield.md §4.5): no bare text nodes directly in `main` or in the plain sections (every string sits in an element); no `pointer-events: none` on the non-interactive cards, images or text.
 - **Bands** (§2.3, layout-shell §5.1 as amended in fix round 2):
-  - The hero is `data-band="solid"` with its own spacing overrides: top 24 / 32 / 0 (base / md / lg+), bottom 0 at every breakpoint.
-  - **The collapse selector must skip the band after the hero.** The M1.13 rule `:is(plain, solid) + :is(plain, solid)` would otherwise zero the collections band's top padding and leave no gap at all. Mark the hero as flush-ending (for example `data-flush-end`) and exclude its next sibling from the collapse; the collections band (or bestsellers, if collections is omitted) keeps its top `--section-y`. Extend the shell's band-collapse e2e test with that case.
+  - The hero is `data-band="solid"` with its own spacing overrides: top 24 / 32 / 0 (base / md / lg+). **Bottom: 0 when another band follows it; while it is the page's last band before the footer (M2.2), it keeps `--section-y` (layout-shell §5.1: the last section before the footer keeps its bottom padding).** tech-agent's `[data-band][data-flush-end]:not(:has(~ [data-band]))` rule does exactly this and switches itself off when M2.3 adds a band.
+  - **The collapse selector must skip the band after the hero.** The M1.13 rule `:is(plain, solid) + :is(plain, solid)` would otherwise zero the collections band's top padding and leave no gap at all. Mark the hero as flush-ending (for example `data-flush-end`) and exclude its next sibling from the collapse; the collections band (or bestsellers, if collections is omitted) keeps its top `--section-y`. Extend the shell's band-collapse e2e test with that case, and with the flush-ending band as the last band (bottom = `--section-y`).
   - Collections `plain`. Bestsellers `plain` (collapsed top after collections). Brand story `dusk` with the veil and the bottom starlight rule.
 - **Footer:** unchanged in M2 (minimal). When the home newsletter band ships, pass `newsletter={false}` to the footer on `/`.
 - **Metadata:** `export const metadata` with `title: { absolute: "Starflames · Scented candles for starlit evenings" }` and the description (§12).
@@ -955,13 +987,17 @@ Notes:
   4. With the flags off, `#collections ul` and `#bestsellers ul` contain no `a` and no `button`.
   5. "Shop favorites" scrolls to `#bestsellers` and the section's h2 is not under the header.
   6. The hero image is visible, and the h1 has no `data-hero-reveal`.
-  7. `@motion`: under reduced motion no element in `main` has an inline `opacity: 0` after load.
+  7. `@motion`: under reduced motion no element in `main` has an inline `opacity: 0` after load, and every `[data-hero-reveal]` has a computed `animation-name` of `none`.
   8. No horizontal scroll at 320.
   9. No 404s (the M1.20 fixture).
   10. CLS < 0.05 at 390 and 1440.
   11. The gap between the primary CTA's box and the text link's box is at least 30px at 390 and 1440 (the ring stays outside the glow footprint).
   12. At 390, once `document.fonts.ready` has resolved, the hero subcopy is 3 lines (its box is at most 87px tall: 3 × 28.8px), and the primary CTA's top edge is at most 340px from the top of the page (§3.2: y ≈ 335).
-  13. The collections band's computed `padding-top` equals `--section-y` (64px at 390, 128px at 1440), and the hero's `padding-bottom` is 0 (§2.3).
+  13. When a band follows the hero: the collections band's computed `padding-top` equals `--section-y` (64px at 390, 128px at 1440), and the hero's `padding-bottom` is 0 (§2.3). While the hero is the last band (M2.2 on `/`): the hero's `padding-bottom` equals `--section-y`.
+  14. Under `no-preference`: each `[data-hero-reveal]` has the computed `animation-name` `hero-reveal`, a duration of 0.7s, `animation-fill-mode: backwards`, and delays of 0s / 0.1s / 0.2s in DOM order (0s / 0.1s on `/` in M2.2). After `animationend`, each target has opacity 1, no transform and no inline style. `<html>` never has a `hero-pending` class.
+  15. With every `/_next/static/chunks/*.js` request aborted, the reveal targets still reach opacity 1 within 1.5 s of `DOMContentLoaded` (the entrance doesn't depend on JS).
+  16. With `data-motion="off"` set on `<html>` before first paint (an init script), every `[data-hero-reveal]` has `animation-name: none` and is visible.
+- **Build review (M2.2):** `/`'s first-load JS against the M1 baseline (no gsap chunk); and, on the slow-4G / 4× CPU probe at 390 on `/dev/hero`, FCP, the last reveal target's `animationend` (at most FCP + 1.0 s, §3.6) and LCP (still the hero `<img>`).
 - **Screenshots:** the existing `home-<project>.png` full-page shots, plus a named viewport shot `home-hero` (`fullPage: false`) at 390 and 1440, for comparison with §2.4 and §3.2.
 
 ---
@@ -977,7 +1013,7 @@ I re-read every string in §11, the alt text in §11.3, the SEO copy in §12 and
 - **"Join the night list"** is ordinary mailing-list wording.
 - **The illustration** uses only the brand's generic motifs (crescent, small flame, four-point stars, an invented constellation from starfield.md).
 - **No maker, hand-poured, small-batch, material or wellness claims** in any string.
-- The build-note attribute `data-flush-end` (§2.3, §14) is a generic English identifier.
+- The build-note attribute `data-flush-end` (§2.3, §14) is a generic English identifier. So are the identifiers added in the hero follow-ups: the `hero-reveal` keyframes and the `--reveal-order` property. The follow-ups add no visible copy.
 
 Confirmed clean.
 

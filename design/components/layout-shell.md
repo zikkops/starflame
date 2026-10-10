@@ -7,6 +7,10 @@ Plugs in later: the header ([`header.md`](./header.md), M1.14), the footer ([`fo
 
 ## Changelog
 
+**Post-pass minors from the hero follow-up review** (2026-10-10)
+
+1. §13.3: the note that said to keep `<html suppressHydrationWarning>` and the hero-pending script untouched contradicted motion.md §5.1 item 8. It now says the hero-pending script is retired in M2.2, and `suppressHydrationWarning` stays only while a head script changes `<html>`. Wording only.
+
 **M2.1 home fix round 2: QA issues 1–7** (2026-10-10). Only issue 1 touches this file.
 
 1. §5.1: a hero may now override its own **top and bottom** spacing (it said "top" only), and the collapse rule no longer zeroes the next band's top padding when the band before it already ends at 0. The intent is unchanged: exactly one `--section-y` between two adjacent bands of the same colour. Without this, a hero that ends in a feathered image (padding-bottom 0) followed by a plain band would have had no gap at all (`design/pages/home.md` §2.3). A build note for the collapse selector is added. Checked every spec that relies on §5.1: header.md §8.3 (a hero's top spacing only), footer.md §4.1 and §7 here (the last section keeps its bottom padding; on home the hero is never the last section), starfield.md §13.1 and §13.3 (the dev pages have no hero; their plain → solid collapse is unchanged), and the M1.13 shell test (no hero in it). None relied on the old wording. No value changes.
@@ -629,7 +633,7 @@ Notes:
 - **Server Components by default.** Client Components only where needed: the error boundaries (`error.tsx` files must be), the header's scroll-state island (M1.15) and the starfield's child (M1.19).
 - The root layout must not import the starfield's client code (§8.3).
 - Tailwind already scans `components/`, so `components/layout/` needs no new `@source`.
-- Keep `<html suppressHydrationWarning>` and the hero-pending script untouched.
+- The hero-pending script is retired in M2.2 (motion.md §5.1); keep `suppressHydrationWarning` on `<html>` only while a head script changes `<html>`.
 - Suggested e2e checks (tech-agent's call): first Tab focuses the skip link, which is visible and has the name "Skip to content"; Enter focuses `main#main` and its top is not under the header (390 and 1440); exactly one banner, main and contentinfo; every `nav` has a unique name; no horizontal scroll at 320; an unknown URL returns 404 **with** banner and contentinfo and the title "Page not found · Starflames"; `/dev/tokens` still renders under `ENABLE_DEV_PAGES=true`; print emulation hides `[data-decorative]`; CLS < 0.05 with the header in place.
 
 ## 14. IP guardrail

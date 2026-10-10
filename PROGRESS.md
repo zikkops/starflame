@@ -546,3 +546,24 @@ Entry format:
 - Result: `design/pages/home.md`: hero (feathered photo, glow follows the candle, in-page CTAs "Shop favorites"/"Explore collections", LCP = image), featured collections (6 non-link arched cards until M3.7), bestsellers (2 + 2 newest, "Favorites and new flames" when mixed; the product card baseline for M3.1; no bag/links until M4/M5), brand story (SVG motif, no maker claims), newsletter omitted until M2.5a/b + M2.7. layout-shell §5.1 amended (a hero may override top and bottom spacing; the collapse keeps the next band's top when the hero ends at 0). tokens rule 7 / §2.6 and art-direction §4.3/§5 aligned.
 - QA verdict: PASS (3 design minors → design-agent now: the Comet Season card sum 406.7; subcopy line counts at 768/1440 (2 lines, 45ch measure); collections xl sizes 187px).
 - Notes: M2.2 carries: add `gsap` (stack-approved) and log it; fix the M1.13 collapse selector (hero `data-flush-end` so the collections band keeps its top padding) + shell test case; subcopy `max-w-measure-intro` + `text-wrap: pretty`.
+
+## 2026-10-10 M2.2 — Hero (tech spec)
+- Agent: tech-agent
+- Step: spec (prototype: unit 74, seed 20 + a separate seed-cli file, e2e 269/35 + 15/1, 52 screenshots)
+- Result: `design/tech/M2.2-hero.md`: HomeHero (art-directed `<picture>` via getImageProps, eager + fetchPriority high, CSS-mask feather, glow behind the image ≥md), `heroActions()` (no CTAs on `/` until M2.3/M2.4 add the target sections), `/dev/hero` with both CTAs, `primaryButtonClasses({glow})`, the HomeMotion island (gsap core, matchMedia, hero-pending, data-motion off), the collapse fix (`data-flush-end`), home SEO metadata. LCP = image at 390/1440; CLS 0.
+- QA verdict: pending
+- Notes: **New dependency (approved stack):** `gsap` 3.15.0 exact (no install script, no deps, GSAP Standard no-charge license; audit unchanged at 20). **Cost: +27.3 KB gz JS on `/`** — the orchestrator asked QA to weigh it against a CSS-only hero entrance. PUSHBACK 1 approved (layout-shell §5.1 rules): the hero keeps its bottom padding while it is the last band → design-agent adds the sentence to home §2.3. Note 2 (UX): on slow 4G + 4× CPU, the hero text/CTAs reveal at ~2.8 s vs the image at ~1.7 s → routed to design-agent (keep the CTA group un-hidden below md, or shorten the fallback).
+
+## 2026-10-10 M2.2 — Hero (spec review) + design follow-ups
+- Agent: qa-agent; design-agent
+- Step: spec review; design follow-up
+- Result: Tech checks all pass (byte-compare, 12 diffs, e2e 269/35 + 15/1, screenshots match home §3, LCP = image, CLS 0, contrast AA, no dead links, the collapse fix, metadata, gsap pin). design-agent (in parallel) rewrote motion.md §5.1 + home §3.6/§9 to a **CSS-only first-paint hero entrance** (keyframes `hero-reveal`, `--reveal-order`, no-preference only, outside data-motion off; retires the hero-pending head script + 2.5 s timer; gsap + ScrollTrigger lazy from M2.3), and added the PUSHBACK 1 padding sentence to home §2.3.
+- QA verdict: FAIL (1 blocking [design]: the hydration-gated entrance reveals the text/CTAs 0.8–2.2 s after the LCP image on slow 4G and is nondeterministic → the CSS-only entrance (QA simulated: ends at FCP + 0.90 s); 5 tech minors: drop gsap on `/` for now; the 768@DPR2 hero fetches w=3840 (100 KB): state or tune `sizes`; a `/` starfield-paused check; the support/hero.ts comment; M2.3 hand-off caveats (e2e 13 flip; the collections band must be a later sibling); 1 design minor: starfield.md §9 "on /" wording).
+- Notes: The orchestrator runs the QA spec review of design-agent's motion.md/home.md change and tech-agent's M2.2 spec revision in parallel. A harness note flagged QA's mention of `.claude/settings.local.json` in the prototype listing: a file-list mention only, nothing to act on.
+
+## 2026-10-10 — Re-plan: visual site first
+- Agent: orchestrator
+- Step: plan
+- Result: At the user's request, a priority block at the top of TASKS.md reorders the remaining work: Phase A home (M2.2–M2.5), Phase B shop & product (M3, M4), Phase C bag/checkout/info pages UI-only (M5.1/5.3/5.4 client-only bag, M6.2 checkout UI with the stub, M8.1–M8.8), Phase D backend (auth logic, bag sync, account/order history, checkout Functions, webhooks, email, admin, newsletter/legal pages, final QA). Screenshot gates after A, B, C. The design track writes specs ahead.
+- QA verdict: n/a
+- Notes: The user asked about speed; the faster QA mode (combined spec+build review for low-risk pages) was offered, not yet chosen, so the current rigor stays.
