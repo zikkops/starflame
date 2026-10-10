@@ -577,6 +577,8 @@ The heading has two variants. `selectHomeBestsellers` says which one applies.
 
 **Decision:** this spec defines the card's **anatomy, tokens and M2 state**. It is the source of truth that **M3.1 adopts and extends** (quick add, variants hint, sale price, out-of-stock state, the hover zoom details, and the move to `design/components/product-card.md`). M3.1 may revise anything here as long as it says what changed. Home then picks up the revision with no spec change here.
 
+**Current spec: [`product-card.md`](../components/product-card.md)** (M3.1) owns the card from M3.2 on: anatomy, states, quick add, sizes per context and its e2e checks. Its §12 lists what changed against this section, which stays as the M2 baseline.
+
 ### 6.1 Anatomy
 
 ```

@@ -210,6 +210,8 @@ Kept out of the route entries, in a separate map in the same module:
 const features = {
   "collection-pages": { milestone: "M3.7", live: false }, // "Our collections" group from getCollections() (§3.4)
   newsletter:          { milestone: "M2.7", live: false }, // the footer teaser slot (§2.4)
+  "product-pages":     { milestone: "M4.3", live: false }, // product card name becomes the stretched link, hover on (home.md §5.4, product-card.md §6)
+  "quick-add":         { milestone: "M5.4", live: false }, // product card quick add; flips with the client bag store (product-card.md §4)
 } as const;
 ```
 
