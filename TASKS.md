@@ -32,7 +32,7 @@ Visuals first (user request, 2026-10-09). Two parallel tracks; within a track, o
 - [x] M1.5 (T) Firestore + Storage security rules, `firestore.indexes.json`, rules test suite (`npm run test:rules`)
 - [x] M1.20b (T) e2e reliability: run @perf/timing tests in a serial pass (workers 1) after the parallel pass; tag/rewrite starfield test 12; CLS diagnostics; waitForState timeout. Blocks the M1 gate
 - [x] M1.6 (T) Repositories (`getProducts`, `getProductBySlug`, `getCollections`, `getCollectionBySlug`, ...)
-- [ ] M1.8 (T) Seed script with typed mock products + the generated imagery into the emulator (`npm run seed`) — needs M1.7. Acceptance also: lif crops + /public JPEG export + header size checks (M1.4); draft products seeded without images; the seed clears the Next data cache; the e2e build loads `.env.example` when `.env.local` is missing and seeds before building; a plain build without emulators fails loudly (CLAUDE.md note updated) (M1.6 pushback 1)
+- [x] M1.8 (T) Seed script with typed mock products + the generated imagery into the emulator (`npm run seed`) — needs M1.7. Acceptance also: lif crops + /public JPEG export + header size checks (M1.4); draft products seeded without images; the seed clears the Next data cache; the e2e build loads `.env.example` when `.env.local` is missing and seeds before building; a plain build without emulators fails loudly from the first task that calls a repository from a page (hand-off: `scripts/build-preflight.mjs`, M2.3/M2.4) (M1.6 pushback 1)
 
 - [ ] **M1 gate:** summary + screenshots to user
 

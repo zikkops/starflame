@@ -61,7 +61,7 @@ All names and taglines must be original (for example collections such as "Moonli
    - Firebase: security rules tested in the emulator (customers read/write only their own data; products are public read-only; orders writable only by Functions; admin actions require the `admin` custom claim); no secrets in client bundles; efficient Firestore reads (no N+1, indexes defined)
    - IP guardrail check on all copy
 6. **Fix rounds.** On FAIL, route each issue to the agent it is tagged for (`[design]` or `[tech]`) and re-review. **Max 3 rounds per task**, then stop and ask the user.
-7. **Close.** On PASS: tick the task in `TASKS.md` and append to `PROGRESS.md`. (Normally also commit `feat: <task>`. **Commits are paused at the user's request (2026-10-08):** the user will commit and push later. Don't commit or set a git identity until the user says otherwise.)
+7. **Close.** On PASS: tick the task in `TASKS.md`, append to `PROGRESS.md`, and commit `feat: <task>` (author `zikkops <zikkops@users.noreply.github.com>`, set in this repo's local git config), then `git push` to `origin` (https://github.com/zikkops/starflame.git, branch `main`). Commits resumed at the user's request on 2026-10-10 after the initial `feat: M1 foundation` push.
 8. **Milestone gate.** At the end of each milestone, stop and give the user a short summary plus screenshots before continuing.
 
 ### Orchestrator notes

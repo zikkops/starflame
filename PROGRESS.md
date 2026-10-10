@@ -504,3 +504,17 @@ Entry format:
 - Checks: tsc, typecheck, lint, format:check, test:unit 70/70, test:seed 20/20, test:repos 19/19, test:rules 251/251, smoke:firebase 6 ok, plain build (no emulators), check:client-bundle (21 files), test:e2e exit 0 (parallel 218 passed / 30 skipped, @perf 15 / 1 skipped, 40 screenshots), images:build re-run 0 written, fresh-clone simulation (message as above, test:unit 69/70, build passes), final plain build: all PASS. Spec blocks byte-checked (10 file blocks; 4 diffs reverse-apply).
 - QA verdict: pending (build review)
 - Notes: CLAUDE.md wording for the orchestrator is in spec §1.11.
+
+## 2026-10-10 — GitHub
+- Agent: orchestrator
+- Step: setup
+- Result: The user provided the GitHub remote. Repo-local git identity `zikkops <zikkops@users.noreply.github.com>` (user choice). Added README.md, committed everything as `feat: M1 foundation` (87c119b; 210 files, ~7.6 MB, no secrets, `assets/` originals excluded per the user's local-only decision) and pushed to `origin/main` (https://github.com/zikkops/starflame.git).
+- QA verdict: n/a
+- Notes: Per-task commits + push resumed (CLAUDE.md loop step 7 updated). The M1.8 build review was still running at commit time; its close gets its own commit.
+
+## 2026-10-10 M1.8 — Seed script (close) — M1 complete
+- Agent: tech-agent → qa-agent → orchestrator
+- Step: spec → spec review → build → build review → close
+- Result: `npm run seed` (emulator-only, loopback hosts only, fixed timestamps, md5-skip uploads, `--reset`), seed-only fixtures (draft + archived), `npm run images:build` (sharp: 6 lif crops, 8 /public JPEGs), cache clearing, e2e seeds before building with the `.env.example` fallback, `scripts/build-preflight.mjs` hand-off for M2.3/M2.4, `npm run test:seed` (20). `assets/` git-ignored except manifest.json.
+- QA verdict: PASS (2 minors: the TASKS.md M1.8 wording (fixed at tick); optional: the seed CLI guard tests should run independently of the seeded hook on a fresh clone). Consolidated M1 run all green: tsc, typecheck, lint, format, unit 70, seed 20, repos 19, rules 251, smoke 6, plain build, client-bundle, e2e 218/30 + @perf 15/1, 40 screenshots; images:build idempotent; audit at the 20 baseline (sharp added none). Safety probes: zero DNS/TCP for every non-demo/non-loopback case. A real fresh `git clone` of HEAD gives the clear "copy assets/images" message.
+- Notes: **M1 Foundation complete (23/23).** Stopping for the M1 gate. Items for the user at the gate: 7 flagged dev-placeholder images; C2PA stripping; assets/ local-only for other machines; pre-launch TODOs (Pinterest EPS, legal trading name, USD currency); 4 known high advisories in prod deps (firebase → grpc-js); the starfield brightness (0.14 cap) check; confirm the resumed-commits CLAUDE.md step 7 (user-instructed 2026-10-10).
