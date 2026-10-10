@@ -6,6 +6,11 @@ Builds on [`layout-shell.md`](../components/layout-shell.md) (§4 Container and 
 
 ## Changelog
 
+**Post-pass minors from the hero follow-up review** (2026-10-10)
+
+1. §3.6, §9, §14: the build-review acceptance measure is the last reveal animation's own end time, read from `document.getAnimations()` as `startTime + delay + duration` on the document timeline and compared with the FCP entry's `startTime`. The `animationend` event time is recorded as a secondary figure only: under hydration long tasks on 4× CPU it can be dispatched late even when the compositor animation finished on time. The FCP + 1.0 s limit is unchanged.
+2. §2.3: the flush-end switch-off selector is quoted the same way as in §14: `[data-band][data-flush-end]:not(:has(~ [data-band]))`.
+
 **Hero follow-ups from M2.2** (2026-10-10)
 
 1. **Approved tech pushback (M2.2 tech spec §1.11, PUSHBACK 1).** The hero's `padding-block-end: 0` applies only when another band follows it. While the hero is the last band before the footer (as in M2.2), it keeps `--section-y` at the bottom, because layout-shell §5.1 says the last section before the footer keeps its bottom padding. Updated in §2.3, §3.2 (the Spacing row) and §14 (the Bands bullet and e2e check 13). Nothing changes once M2.3 puts a band after the hero.
@@ -105,7 +110,7 @@ This is the order the user saw and liked in the mockup. It is kept.
 | Junction | Rule |
 |---|---|
 | Header → hero | The hero overrides its own top spacing. layout-shell §5.1: "A hero may override its own top and bottom spacing (M2.1); no other band does." It uses **24px** at base, **32px** at md, and **0 at lg+**, where the image box starts directly under the header (§3.2). |
-| Hero (solid) → collections (plain) | **The hero's bottom override, and the collapse rule as amended.** The hero sets `padding-block-end: 0` when another band follows it, because it then ends in a feathered image, not in padding (the same §5.1 sentence allows it). **The hero's `padding-block-end: 0` applies only when another band follows it; while it is the page's last band before the footer (M2.2), it keeps `--section-y` at the bottom (layout-shell §5.1: the last section before the footer keeps its bottom padding).** The two bands share bg-page, so the collapse rule applies, and layout-shell §5.1 now reads: "The collapse only removes a duplicate: if the first band already ends at 0 (a hero that overrides its bottom spacing, next point), the second keeps its top padding, so there is still exactly one `--section-y` between them." So the collections band keeps its top padding, and exactly one `--section-y` (64 / 80 / 96 / 128px) separates the bottom of the image box from the collections heading. **Build:** the M1.13 collapse selector (`:is(plain, solid) + :is(plain, solid)` drops `padding-block-start`) must skip a band that follows a flush-ending band, for example by marking the hero `data-flush-end` and excluding the band after it from the selector (tech-agent's call; the layout-shell §5.1 build note, §14). The flush end must switch itself off when no band follows (tech-agent's M2.2 rule `[data-flush-end]:not(:has(~ [data-band]))` does this). |
+| Hero (solid) → collections (plain) | **The hero's bottom override, and the collapse rule as amended.** The hero sets `padding-block-end: 0` when another band follows it, because it then ends in a feathered image, not in padding (the same §5.1 sentence allows it). **The hero's `padding-block-end: 0` applies only when another band follows it; while it is the page's last band before the footer (M2.2), it keeps `--section-y` at the bottom (layout-shell §5.1: the last section before the footer keeps its bottom padding).** The two bands share bg-page, so the collapse rule applies, and layout-shell §5.1 now reads: "The collapse only removes a duplicate: if the first band already ends at 0 (a hero that overrides its bottom spacing, next point), the second keeps its top padding, so there is still exactly one `--section-y` between them." So the collections band keeps its top padding, and exactly one `--section-y` (64 / 80 / 96 / 128px) separates the bottom of the image box from the collections heading. **Build:** the M1.13 collapse selector (`:is(plain, solid) + :is(plain, solid)` drops `padding-block-start`) must skip a band that follows a flush-ending band, for example by marking the hero `data-flush-end` and excluding the band after it from the selector (tech-agent's call; the layout-shell §5.1 build note, §14). The flush end must switch itself off when no band follows (tech-agent's M2.2 rule `[data-band][data-flush-end]:not(:has(~ [data-band]))` does this). |
 | Collections (plain) → bestsellers (plain) | Collapse: bestsellers has `padding-block-start: 0`, so exactly one `--section-y` separates them. (If the collections section is omitted, §4.6, bestsellers follows the hero directly and keeps its top padding by the same amended rule.) |
 | Bestsellers (plain) → brand story (dusk) | Both paddings stay (different colours). |
 | Brand story (dusk) → footer (M2) / newsletter (later) | Both paddings stay. The footer adds its own top padding (footer.md §4.1). |
@@ -311,7 +316,9 @@ Expected timing (the build review records the real figures):
 | Fast 4G, 2× CPU | the entrance started at ≈ 0.8 s | starts at FCP |
 | Desktop | ≈ 0.2 s | starts at FCP |
 
-- **Build-review acceptance:** on tech-agent's slow-4G / 4× CPU probe at 390 (`/dev/hero`, which has the CTA group), the last reveal target's `animationend` is at most **FCP + 1.0 s**; the LCP element is still the hero `<img>`; CLS is 0.
+- **Build-review acceptance:** on tech-agent's slow-4G / 4× CPU probe at 390 (`/dev/hero`, which has the CTA group), the last reveal target's **animation end time** is at most **FCP + 1.0 s**; the LCP element is still the hero `<img>`; CLS is 0.
+  - **The measure is the animation's own end time, not the event.** For each `[data-hero-reveal]` target, take its `hero-reveal` animation from `document.getAnimations()` and compute `startTime + delay + duration` (`startTime` on the document timeline; `delay` and `duration` from `effect.getTiming()`, in ms). The latest of these is compared with the `first-contentful-paint` paint entry's `startTime` (the same time origin). Capture the `Animation` objects while they run (a finished animation with `fill: backwards` drops out of `document.getAnimations()`), and read `startTime` once it is resolved.
+  - **Secondary figure:** the last target's `animationend` event time is recorded too, but it is not the pass/fail measure. Under hydration long tasks on 4× CPU the event can be dispatched late even when the compositor animation finished on time.
 - The CTA group is hit-testable throughout (opacity doesn't block taps), and the plain fragment links need no JS.
 
 The image doesn't zoom or animate on hover (it isn't interactive).
@@ -753,7 +760,7 @@ Rules:
 - Three triggers in total, each `once: true`, so each is killed after it fires.
 - No scroll listeners of its own. No work while the tab is hidden (GSAP's ticker already sleeps).
 - GSAP is not imported by the root layout or any shared component. Home is the only route that loads it in M2.
-- The build review records: the home route's first-load JS against the M1 baseline, the LCP element and its time at 390 and 1440 under Lighthouse mobile throttling, the hero's FCP and its last `animationend` on the slow-4G probe (§3.6), and CLS.
+- The build review records: the home route's first-load JS against the M1 baseline, the LCP element and its time at 390 and 1440 under Lighthouse mobile throttling, the hero's FCP and its last reveal's animation end time on the slow-4G probe (with the `animationend` event time as a secondary figure, §3.6), and CLS.
 
 ---
 
@@ -997,7 +1004,7 @@ Notes:
   14. Under `no-preference`: each `[data-hero-reveal]` has the computed `animation-name` `hero-reveal`, a duration of 0.7s, `animation-fill-mode: backwards`, and delays of 0s / 0.1s / 0.2s in DOM order (0s / 0.1s on `/` in M2.2). After `animationend`, each target has opacity 1, no transform and no inline style. `<html>` never has a `hero-pending` class.
   15. With every `/_next/static/chunks/*.js` request aborted, the reveal targets still reach opacity 1 within 1.5 s of `DOMContentLoaded` (the entrance doesn't depend on JS).
   16. With `data-motion="off"` set on `<html>` before first paint (an init script), every `[data-hero-reveal]` has `animation-name: none` and is visible.
-- **Build review (M2.2):** `/`'s first-load JS against the M1 baseline (no gsap chunk); and, on the slow-4G / 4× CPU probe at 390 on `/dev/hero`, FCP, the last reveal target's `animationend` (at most FCP + 1.0 s, §3.6) and LCP (still the hero `<img>`).
+- **Build review (M2.2):** `/`'s first-load JS against the M1 baseline (no gsap chunk); and, on the slow-4G / 4× CPU probe at 390 on `/dev/hero`, FCP, the last reveal target's animation end time (`startTime + delay + duration` from `document.getAnimations()`, at most FCP + 1.0 s, §3.6), its `animationend` event time (secondary, recorded only) and LCP (still the hero `<img>`).
 - **Screenshots:** the existing `home-<project>.png` full-page shots, plus a named viewport shot `home-hero` (`fullPage: false`) at 390 and 1440, for comparison with §2.4 and §3.2.
 
 ---
