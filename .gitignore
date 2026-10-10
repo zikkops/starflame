@@ -1,0 +1,38 @@
+node_modules/
+/.next/
+/out/
+/build/
+/coverage/
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+.DS_Store
+*.pem
+npm-debug.log*
+# env: ignore all, commit only the example
+.env*
+!.env.example
+# Firebase / emulators
+.firebase/
+/emulator-data/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+database-debug.log*
+pubsub-debug.log*
+/functions/lib/
+# service-account keys (never create these; ignore defensively)
+*serviceAccount*.json
+*service-account*.json
+*-firebase-adminsdk-*.json
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+# Image originals and lif-* crops (M1.8): local only, not in git (about 135 MB). manifest.json
+# stays committed: the catalog mapping and the unit/rules/repository tests read it. On a fresh
+# clone, copy assets/images/ in from a machine that has it, then run `npm run images:build`.
+/assets/**
+!/assets/images/
+!/assets/images/manifest.json

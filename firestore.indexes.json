@@ -1,0 +1,124 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "products",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "sortOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "products",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "collectionSlugs",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "sortOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "products",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "badges",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "sortOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "collections",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "sortOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "orders",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "products",
+      "fieldPath": "longDescription",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "products",
+      "fieldPath": "variants",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "products",
+      "fieldPath": "images",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "products",
+      "fieldPath": "cardImage",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "products",
+      "fieldPath": "scentNotes",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "orders",
+      "fieldPath": "lines",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "orders",
+      "fieldPath": "statusHistory",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "orders",
+      "fieldPath": "shippingAddress",
+      "indexes": []
+    }
+  ]
+}

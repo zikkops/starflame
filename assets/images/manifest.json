@@ -1,0 +1,592 @@
+{
+  "generatedAt": "2026-10-09T01:07:12.033Z",
+  "model": "gpt_image_2_5",
+  "resolution": "2k",
+  "quality": "medium",
+  "referenceRole": "image_references",
+  "referenceImages": {
+    "jar": {
+      "id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+      "lockTest": "cat-moonrise"
+    },
+    "pillar": {
+      "id": "7571f246-a9ea-47b2-9679-957b87fa141d",
+      "lockTest": "cat-lantern-path"
+    },
+    "tin": {
+      "id": "6e1b3d7c-1225-4f6b-8c8a-75560c4fce30",
+      "lockTest": "cat-late-bloom"
+    },
+    "melts": {
+      "id": "9fcb508b-2068-41f1-88ea-8f3d92080397",
+      "lockTest": "cat-fir-hollow"
+    }
+  },
+  "notGenerated": [
+    {
+      "id": "brand-story",
+      "reason": "hold: true (awaiting user confirmation)"
+    }
+  ],
+  "shots": {
+    "cat-moonrise": {
+      "job_id": "6b008ba3-e4d9-4bfb-9120-f8c19d439e34",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-moonrise.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "cat-lantern-path": {
+      "job_id": "60061c5a-cd45-4a73-b8fa-74749a610d8b",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "7571f246-a9ea-47b2-9679-957b87fa141d",
+          "lockTest": "cat-lantern-path"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-lantern-path.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": null
+    },
+    "cat-late-bloom": {
+      "job_id": "2ed3922d-2d81-4b10-9b54-ac63b663e610",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "6e1b3d7c-1225-4f6b-8c8a-75560c4fce30",
+          "lockTest": "cat-late-bloom"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-late-bloom.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "cat-fir-hollow": {
+      "job_id": "40f8e16e-0fc9-48a5-9491-516d6d8881e6",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "9fcb508b-2068-41f1-88ea-8f3d92080397",
+          "lockTest": "cat-fir-hollow"
+        }
+      ],
+      "rerolls": 1,
+      "rejectedJobs": [
+        {
+          "job_id": "f16d55b4-5c96-4a49-b556-06cf757792f0",
+          "reason": "One loose cube rendered yellow-lime instead of sage (same flaw as the lock test)."
+        }
+      ],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-fir-hollow.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Reroll fixed the cube colour: all six cubes uniform sage; tray and lid read translucent midnight-blue. Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "hero-desktop": {
+      "job_id": "14e5137f-4c5f-49c3-b43f-9ef0a139e7ed",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "16:9",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 2688,
+      "height": 1520,
+      "file": "assets/images/hero/hero-desktop.png",
+      "minResolution": "2400 x 1350",
+      "status": "accepted",
+      "notes": "Left 45% dark and calm (faint stars, shadowed balustrade only). Candle sits at about x 52-74% (centre about x 60%, y 57%), not the specified x 68%: M2 should centre the glow on the actual candle position."
+    },
+    "hero-mobile": {
+      "job_id": "b51d961b-9ca3-4023-8120-d70c599f6685",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 1,
+      "rejectedJobs": [
+        {
+          "job_id": "8fbc8872-a858-48be-93ea-7af76e4fdfd0",
+          "reason": "Reroll for posterization; result was equally posterized (stone and bokeh), so v1 kept."
+        }
+      ],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/hero/hero-mobile.png",
+      "minResolution": "1200 x 1500",
+      "status": "flagged",
+      "notes": "Visible posterization/banding in the background bokeh lights and lake reflections. Vessel, moon position (~75% across, ~11% down) and top-30% zone are correct. Consider a high-quality regeneration or upscale before launch."
+    },
+    "cat-midnight-balcony": {
+      "job_id": "6c0b258c-dee5-4c6f-8820-ac50f81a2e8a",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-midnight-balcony.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "cat-ink-and-cedar": {
+      "job_id": "f794d04c-e1a3-4dda-b816-99b340162971",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-ink-and-cedar.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "cat-last-chapter": {
+      "job_id": "900427ac-ccc2-4561-8ec5-d96f4e3a7489",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-last-chapter.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "cat-moss-and-ember": {
+      "job_id": "46de2e8e-a17e-4521-95df-503f2c1a1608",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-moss-and-ember.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "cat-still-water": {
+      "job_id": "0fb5f2ce-1fac-4234-8215-7b55b1aa2109",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-still-water.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "cat-comet-tail": {
+      "job_id": "21a59b34-a4c9-46fb-83f0-53f0f3713964",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-comet-tail.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "cat-margin-notes": {
+      "job_id": "b247c44a-16a5-4973-854e-d35dadba0936",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "6e1b3d7c-1225-4f6b-8c8a-75560c4fce30",
+          "lockTest": "cat-late-bloom"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-margin-notes.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "cat-quiet-shore": {
+      "job_id": "b65d5950-a61e-4312-ae1a-921fe214ef5a",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "6e1b3d7c-1225-4f6b-8c8a-75560c4fce30",
+          "lockTest": "cat-late-bloom"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-quiet-shore.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "cat-lakelight": {
+      "job_id": "962ef68c-651a-4c9a-bc22-1a00448dcf98",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "7571f246-a9ea-47b2-9679-957b87fa141d",
+          "lockTest": "cat-lantern-path"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-lakelight.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": null
+    },
+    "cat-gilded-plum": {
+      "job_id": "cda21f4f-7d3f-47da-8e8c-bf67c385dbfd",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "9fcb508b-2068-41f1-88ea-8f3d92080397",
+          "lockTest": "cat-fir-hollow"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-gilded-plum.png",
+      "minResolution": "1600 x 2000",
+      "status": "accepted",
+      "notes": "Six pale-lilac shimmer cubes, tray and lid midnight-blue. Framing matches the user-approved lock test: the lid/scent cue extend past the strict central width band; still arch-safe (nothing in the arch-clipped corners)."
+    },
+    "cat-little-constellation-set": {
+      "job_id": "eb5dee99-1a33-450c-81f4-e989f9f787c9",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "6e1b3d7c-1225-4f6b-8c8a-75560c4fce30",
+          "lockTest": "cat-late-bloom"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-little-constellation-set.png",
+      "minResolution": "1600 x 2000",
+      "status": "flagged",
+      "notes": "Framing: the ribbon runs off the left edge and the tea light sits at the right edge (outside the central 70%); the tea light is sharp rather than softly out of focus. Arch-safe; vessels, box and stars correct. Not rerolled (reroll budget used)."
+    },
+    "cat-reading-nook-set": {
+      "job_id": "5195c3f6-7cef-4a24-921d-b4281d4519f1",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-reading-nook-set.png",
+      "minResolution": "1600 x 2000",
+      "status": "flagged",
+      "notes": "Posterization in the floor reflections and backdrop; the box lid top enters the top 25% (~18% down); tea light at the right edge. Closed jars, gold lids and labels correct. Not rerolled (reroll budget used)."
+    },
+    "cat-comet-season-gift-box": {
+      "job_id": "e2c5b40d-5d4d-43b8-9296-638718994d2f",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "4:5",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1792,
+      "height": 2240,
+      "file": "assets/images/product-catalog/cat-comet-season-gift-box.png",
+      "minResolution": "1600 x 2000",
+      "status": "flagged",
+      "notes": "Posterization in the backdrop and floor glow; box lid top enters the top 25% (~14% down); the closed melt pack reads as a clear blister with a dark base rather than translucent midnight-blue. Jar, box and stars correct. Not rerolled (reroll budget used)."
+    },
+    "col-moonlit-terrace": {
+      "job_id": "f22e2148-e434-4cbe-8118-da3f8661875f",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "3:4",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1744,
+      "height": 2336,
+      "file": "assets/images/collection/col-moonlit-terrace.png",
+      "minResolution": "1500 x 2000",
+      "status": "accepted",
+      "notes": "Candle base at about 69% of the height (spec 75-85%); still inside the central 60% and below the top 30%. Top 30% has only fine stars."
+    },
+    "col-starlit-library": {
+      "job_id": "b4d4d88c-4b22-45e7-ba46-5ad497282d37",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "3:4",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 1,
+      "rejectedJobs": [
+        {
+          "job_id": "4974168e-6c09-45fe-87df-0494f3e5be7f",
+          "reason": "A blurry streak on the window glass could read as writing; lamp and shelves crowded the top 30%."
+        }
+      ],
+      "width": 1744,
+      "height": 2336,
+      "file": "assets/images/collection/col-starlit-library.png",
+      "minResolution": "1500 x 2000",
+      "status": "accepted",
+      "notes": "Clean window, blank book spines. The lamp shade sits in the top-right corner of the top 30% (would be clipped by an arch crop; not a product)."
+    },
+    "col-ember-grove": {
+      "job_id": "56d66bf1-48af-43b2-929a-3f5e0a1f6174",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "3:4",
+      "refs": [
+        {
+          "job_id": "7571f246-a9ea-47b2-9679-957b87fa141d",
+          "lockTest": "cat-lantern-path"
+        }
+      ],
+      "rerolls": 1,
+      "rejectedJobs": [
+        {
+          "job_id": "7a280cb8-fc0b-42fd-a986-7aae81bac1e6",
+          "reason": "Heavy posterization across mist, trees and foliage."
+        }
+      ],
+      "width": 1744,
+      "height": 2336,
+      "file": "assets/images/collection/col-ember-grove.png",
+      "minResolution": "1500 x 2000",
+      "status": "accepted",
+      "notes": "A few tiny drifting glints sit around 20% of the height, as the prompt requests; otherwise calm."
+    },
+    "col-lakeside-hush": {
+      "job_id": "c826b339-6ba5-41b0-a592-3401354130aa",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "3:4",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        }
+      ],
+      "rerolls": 1,
+      "rejectedJobs": [
+        {
+          "job_id": "dee22f72-652b-464e-bfd2-a48a3684b4f8",
+          "reason": "Moon in the top 30% (~22% down) and posterization in sky and water."
+        }
+      ],
+      "width": 1744,
+      "height": 2336,
+      "file": "assets/images/collection/col-lakeside-hush.png",
+      "minResolution": "1500 x 2000",
+      "status": "flagged",
+      "notes": "Best of two: the moon is still slightly inside the top 30% (~26% down, ~88% across) and mild posterization remains in the sky and mist. Vessel correct."
+    },
+    "col-comet-season": {
+      "job_id": "89892830-d377-4d4f-977c-dfcc5891f544",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "3:4",
+      "refs": [
+        {
+          "job_id": "f989ff40-d547-4121-9eab-9c9313315d4c",
+          "lockTest": "cat-moonrise"
+        },
+        {
+          "job_id": "9fcb508b-2068-41f1-88ea-8f3d92080397",
+          "lockTest": "cat-fir-hollow"
+        }
+      ],
+      "rerolls": 1,
+      "rejectedJobs": [
+        {
+          "job_id": "da5547e6-4c49-49d1-aefe-a7ce7bf6ab9c",
+          "reason": "Comet in the top 30% and melt pack rendered as a clear blister (v1 used the jar ref only)."
+        }
+      ],
+      "width": 1744,
+      "height": 2336,
+      "file": "assets/images/collection/col-comet-season.png",
+      "minResolution": "1500 x 2000",
+      "status": "flagged",
+      "notes": "Best of two: the single comet is still at ~24% of the height (inside the top 30%); the melt pack is a clear lid over a dark base rather than translucent midnight-blue; some posterization in the mountains. One comet only."
+    },
+    "col-gift-sets": {
+      "job_id": "9e6734d9-a173-4063-9390-359f869fe9c9",
+      "model": "gpt_image_2_5",
+      "resolution": "2k",
+      "quality": "medium",
+      "aspectRatio": "3:4",
+      "refs": [
+        {
+          "job_id": "6e1b3d7c-1225-4f6b-8c8a-75560c4fce30",
+          "lockTest": "cat-late-bloom"
+        }
+      ],
+      "rerolls": 0,
+      "rejectedJobs": [],
+      "width": 1744,
+      "height": 2336,
+      "file": "assets/images/collection/col-gift-sets.png",
+      "minResolution": "1500 x 2000",
+      "status": "flagged",
+      "notes": "Posterization in the window background; the tins read mostly plain brushed silver with only a faint lilac tint; the box spans wider than the central 60%. One flame only, stars correct. Not rerolled (reroll budget used)."
+    }
+  }
+}

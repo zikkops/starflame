@@ -1,0 +1,67 @@
+{
+  "name": "starflames",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "node scripts/clear-data-cache.mjs",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "next typegen && tsc --noEmit && npm --prefix functions run typecheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "postinstall": "npm run functions:install",
+    "functions:install": "npm --prefix functions ci",
+    "functions:build": "npm --prefix functions run build",
+    "emulators": "npm run functions:build && firebase emulators:start --project demo-starflames --import=./emulator-data --export-on-exit=./emulator-data",
+    "smoke:firebase": "tsx --conditions=react-server scripts/smoke-firebase.ts",
+    "seed": "tsx --conditions=react-server scripts/seed/index.ts",
+    "images:build": "tsx scripts/images/build-images.ts",
+    "test:unit": "tsx --conditions=react-server --test \"tests/unit/**/*.test.ts\"",
+    "test:rules": "tsx scripts/emulators-exec.ts --only firestore,storage -- --test --test-concurrency=1 \"tests/rules/*.test.ts\"",
+    "test:repos": "tsx scripts/emulators-exec.ts --only firestore -- --conditions=react-server --test --test-concurrency=1 \"tests/repos/*.test.ts\"",
+    "test:seed": "tsx scripts/emulators-exec.ts --only firestore,storage -- --conditions=react-server --test --test-concurrency=1 \"tests/seed/*.test.ts\"",
+    "check:client-bundle": "node scripts/check-client-bundle.mjs",
+    "wordmark:build": "tsx scripts/wordmark/build-wordmark.ts",
+    "test:e2e": "tsx scripts/emulators-exec.ts --only auth,firestore,storage -- scripts/e2e.ts",
+    "test:e2e:ui": "firebase emulators:exec --project demo-starflames --only auth,firestore,storage \"npm run seed && playwright test --ui\"",
+    "test:e2e:install": "playwright install --no-remove chromium"
+  },
+  "dependencies": {
+    "firebase": "^12.19.0",
+    "firebase-admin": "^14.5.0",
+    "next": "16.4.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "server-only": "0.0.1"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "5.0.2",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "16.4.0",
+    "eslint-config-prettier": "^10.1.8",
+    "firebase-tools": "15.32.1",
+    "prettier": "3.9.9",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "sharp": "0.35.5",
+    "tailwindcss": "^4.3.3",
+    "tsx": "4.23.15",
+    "typescript": "~5.9.3"
+  },
+  "allowScripts": {
+    "protobufjs": false,
+    "re2": false,
+    "unrs-resolver": false,
+    "@firebase/util": false,
+    "esbuild": false
+  }
+}

@@ -1,0 +1,14 @@
+.next
+out
+node_modules
+package-lock.json
+coverage
+playwright-report
+test-results
+functions/lib
+emulator-data
+design/
+.claude/
+CLAUDE.md
+TASKS.md
+PROGRESS.md

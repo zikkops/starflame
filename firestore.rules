@@ -1,0 +1,140 @@
+rules_version = '2';
+
+// Starflames Firestore rules (M1.5, design/tech/M1.5-security-rules.md).
+// Default deny: any path not matched below is refused. The Admin SDK (server code, seed,
+// Cloud Functions) bypasses these rules. No client path uses the `admin` claim: admin work
+// runs in server code that checks the claim, then writes with the Admin SDK (M7).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // Mirrors SLUG_PATTERN (lib/domain/ids.ts).
+    function isSlug(value, maxSize) {
+      return value is string && value.size() <= maxSize
+        && value.matches('^[a-z0-9]+(-[a-z0-9]+)*$');
+    }
+
+    // A string of 1..maxSize characters (the guards' str({ max })).
+    function isText(value, maxSize) {
+      return value is string && value.size() >= 1 && value.size() <= maxSize;
+    }
+
+    function isNullableText(value, maxSize) {
+      return value == null || isText(value, maxSize);
+    }
+
+    function hasExactly(data, fields) {
+      return data.keys().hasAll(fields) && data.keys().hasOnly(fields);
+    }
+
+    // ---- Catalog: public read of published documents, never client-written ----
+    // A list query must filter on status == "published", or the whole query is denied.
+
+    match /products/{slug} {
+      allow read: if resource.data.status == 'published';
+    }
+
+    match /collections/{slug} {
+      allow read: if resource.data.status == 'published';
+    }
+
+    // ---- users/{uid}: the owner's profile (UserProfile, lib/types/user.ts) ----
+
+    // Mirrors addressParser (lib/domain/schemas.ts).
+    function isAddress(a) {
+      return a is map
+        && hasExactly(a, ['fullName', 'line1', 'line2', 'city', 'region', 'postalCode',
+                          'country', 'phone'])
+        && isText(a.fullName, 100)
+        && isText(a.line1, 100)
+        && isNullableText(a.line2, 100)
+        && isText(a.city, 80)
+        && isNullableText(a.region, 80)
+        && isText(a.postalCode, 20)
+        && a.country is string && a.country.matches('^[A-Z]{2}$')
+        && isNullableText(a.phone, 30);
+    }
+
+    function isProfile(data) {
+      return hasExactly(data, ['displayName', 'defaultShippingAddress', 'createdAt', 'updatedAt'])
+        && isNullableText(data.displayName, 80)
+        && (data.defaultShippingAddress == null || isAddress(data.defaultShippingAddress))
+        && data.updatedAt == request.time;
+    }
+
+    match /users/{uid} {
+      allow get: if isOwner(uid);
+      allow create: if isOwner(uid)
+        && isProfile(request.resource.data)
+        && request.resource.data.createdAt == request.time;
+      allow update: if isOwner(uid)
+        && isProfile(request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt;
+      // No list, no delete (account deletion runs on the server).
+
+      // ---- users/{uid}/cart/{sku}: one CartLine per document ----
+      // get() budget (M1.4 §1): exactly one get(), of the line's product, and only after the
+      // cheap checks pass. No other get()/exists() in any cart rule, so a 20-line sign-in merge
+      // over 20 distinct products fits the 20-document-access limit of one batched write.
+      // Rules can't count a subcollection: the 20-line limit lives in the client and the
+      // checkout Function (spec §1 Cart limit).
+      function isCartLine(data, sku) {
+        return hasExactly(data, ['productSlug', 'sku', 'quantity', 'addedAt', 'updatedAt'])
+          && data.sku == sku
+          && isSlug(data.sku, 100)
+          && isSlug(data.productSlug, 80)
+          && data.quantity is int && data.quantity >= 1 && data.quantity <= 10
+          && data.updatedAt == request.time;
+      }
+
+      function isPublishedSku(data) {
+        let product = get(/databases/$(database)/documents/products/$(data.productSlug)).data;
+        return product.status == 'published' && data.sku in product.skus;
+      }
+
+      match /cart/{sku} {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid)
+          && isCartLine(request.resource.data, sku)
+          && request.resource.data.addedAt == request.time
+          && isPublishedSku(request.resource.data);
+        allow update: if isOwner(uid)
+          && isCartLine(request.resource.data, sku)
+          && request.resource.data.addedAt == resource.data.addedAt
+          && isPublishedSku(request.resource.data);
+        allow delete: if isOwner(uid);
+      }
+    }
+
+    // ---- orders: written only by Cloud Functions (Admin SDK) ----
+    // A signed-in customer reads only their own orders; a list query must filter on
+    // userId == their uid. Guest orders (userId == null) are never readable from a client.
+
+    match /orders/{orderId} {
+      allow read: if signedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // ---- newsletterSignups/{emailHash}: create-only, anyone ----
+    // The ID must be the SHA-256 of the normalised email, so dedupe can't be bypassed; a
+    // duplicate arrives as an update and is denied. NFC is not enforced (accepted risk, M1.4 §1).
+
+    match /newsletterSignups/{emailHash} {
+      allow create: if hasExactly(request.resource.data, ['email', 'source', 'consentVersion', 'createdAt'])
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 254
+        && request.resource.data.email == request.resource.data.email.trim().lower()
+        && request.resource.data.email.matches('^[^\\s@]+@[^\\s@]+[.][^\\s@]+$')
+        && emailHash == hashing.sha256(request.resource.data.email).toHexString().lower()
+        && request.resource.data.source in ['home', 'footer']
+        && isText(request.resource.data.consentVersion, 40)
+        && request.resource.data.createdAt == request.time;
+    }
+  }
+}

@@ -1,0 +1,545 @@
+{
+  "meta": {
+    "task": "M1.7 Seed catalog copy",
+    "owner": "design-agent",
+    "status": "spec, fix round 1 applied, awaiting QA re-review",
+    "changelog": [
+      "Fix round 1: QA issues 1-11 (2026-10-09). Renames: Silver Hour -> Moonrise (user's choice), Night Garden -> Late Bloom and Falling Star -> Gilded Plum (design-agent's picks, the user can veto), across slugs, SKUs, image ids, gift-set contents and copy. Comet Season tagline, description and mood note reworded so the sky no longer falls; no streak-of-light framing in the melts' copy; 'frost' and 'starlight' never appear together in Comet Season material. Midnight Balcony's wellness-effect line replaced with a scent description. Reading Nook Set says 'two Starlit Library jars'. Jar care gives first-burn times for both jar sizes. Comet Tail reclassified to smoky-amber. Derived fields for M1.4 described in catalog.md section 6.1 and meta.derivedFieldsNote. Bestseller badge style now exists in tokens.md (badge-bestseller)."
+    ],
+    "sampleData": true,
+    "sampleDataNote": "SAMPLE DATA for the Firebase emulator only. Prices, weights, burn times and scent notes are plausible placeholders, not real product facts. Nothing here goes to production without user approval.",
+    "humanReadable": "design/copy/catalog.md",
+    "imageBriefs": "design/art/shot-list.json",
+    "defaultCurrency": "USD",
+    "priceUnit": "integer minor units (cents for USD); 3400 = $34.00",
+    "language": "en-US (US spelling in customer-facing copy)",
+    "confirmWithUser": [
+      "meta.defaultCurrency: USD is a placeholder until the user picks a currency",
+      "all prices: sample levels for small-batch luxury candles",
+      "microcopy.giftSet.packaging: gift box and gold ribbon packaging is assumed",
+      "microcopy.giftSet.worthSeparately: compare-at value wording (consumer-pricing rules)",
+      "products[gilded-plum]: gold shimmer in the wax is an appearance assumption, and the name leans on it",
+      "products[late-bloom], products[gilded-plum]: names picked by design-agent in fix round 1; the user can veto",
+      "products[*].variants[*].warmTimeHoursPerPiece: 8 h per wax melt cube is a sample figure",
+      "collections[comet-season]: limited-run wording (not restocked this year)",
+      "production claims: no copy says hand-poured, small batch, wax type, wick material, natural, organic, vegan, non-toxic or eco. Add only once the user confirms they are true."
+    ],
+    "fieldNotes": {
+      "type": "one of: jar, pillar, tin, wax-melt, gift-set",
+      "collection": "primary collection slug (exactly one)",
+      "alsoIn": "extra collection slugs where the product is also listed",
+      "scentFamily": "one of scentFamilies[].slug, or null for gift sets (derive from contents)",
+      "burnTimeHours": "per variant {min,max}; null for wax melts and gift sets",
+      "warmTimeHoursPerPiece": "wax melts only: approximate hours of scent per cube in a warmer",
+      "pieces": "wax melts only: cubes per pack",
+      "giftSetContents": "gift sets only: references other products by slug and sku",
+      "images.catalog / images.lifestyle": "ids in design/art/shot-list.json; every size variant reuses the product's one catalog image",
+      "careNotesRef": "key into microcopy.care"
+    },
+    "derivedFieldsNote": "Not stored in this file. For M1.4, tech-agent may derive per product: priceFrom (lowest variant price), sizeKeys[] (one key per variant), collectionSlugs[] (collection plus alsoIn) and scentFamilies[] (for gift sets, the union of their contents' scentFamily; otherwise [scentFamily]). Firestore allows only one array-contains or array-contains-any clause per query. Description only; tech-agent decides the implementation. See catalog.md section 6.1."
+  },
+
+  "scentFamilies": [
+    { "slug": "floral", "label": "Floral", "sortOrder": 1 },
+    { "slug": "fresh", "label": "Fresh", "sortOrder": 2 },
+    { "slug": "citrus", "label": "Citrus", "sortOrder": 3 },
+    { "slug": "woody", "label": "Woody", "sortOrder": 4 },
+    { "slug": "gourmand", "label": "Gourmand", "sortOrder": 5 },
+    { "slug": "smoky-amber", "label": "Smoky & amber", "sortOrder": 6 }
+  ],
+
+  "collections": [
+    {
+      "slug": "moonlit-terrace",
+      "name": "Moonlit Terrace",
+      "tagline": "Cool stone, night flowers and a valley of lights below.",
+      "description": "High above a sleeping valley, a stone terrace holds the last warmth of the day. Night flowers open along the balustrade, the air turns cool and clean, and far below the windows of a hillside town glow like a second sky. These are bright, airy florals and fresh night-air scents for slow evenings and open windows.",
+      "moodNote": "A pale carved stone balustrade on a high terrace at night; a valley and the warm window lights of a distant hillside town as soft bokeh; mountain silhouettes; a thin crescent moon; a starry indigo sky with violet and dusky-pink haze at the horizon; night-blooming jasmine. Cool and airy: moonlight-blue fill dominates and the candle is the only warm point.",
+      "isLimited": false,
+      "sortOrder": 1,
+      "images": { "mood": "col-moonlit-terrace" }
+    },
+    {
+      "slug": "starlit-library",
+      "name": "Starlit Library",
+      "tagline": "Old pages, black tea and a window full of stars.",
+      "description": "A reading room after everyone has gone to bed: worn leather chairs, books stacked two deep, a pot of tea gone cool beside the last chapter. Through the tall window the stars keep watch. Warm woods, tea and soft gourmand notes for the hours when you read one page more than you meant to.",
+      "moodNote": "An old oak reading table; stacked antique leather books with plain, blank spines; an unlit brass reading lamp; a tall arched window onto a starry indigo sky; a cup of black tea; dust motes catching the candlelight. The warmest of the core collections: more amber on wood and leather, but shadows stay deep navy.",
+      "isLimited": false,
+      "sortOrder": 2,
+      "images": { "mood": "col-starlit-library" }
+    },
+    {
+      "slug": "ember-grove",
+      "name": "Ember Grove",
+      "tagline": "Pine, moss and sparks drifting up into the dark.",
+      "description": "Deep in an old pine wood, a path of lanterns leads to a clearing where moss grows thick over the stones. Sparks drift up from somewhere out of sight and blur into the stars between the branches. Resinous woods, soft smoke and green moss for evenings that feel like a quiet adventure.",
+      "moodNote": "A pine forest clearing at night; a flat mossy stone; ferns; tall dark trunks; a few tiny glowing points of drifting light between the trees, like sparks or falling starlight; a soft violet mist between the trunks; a narrow path fading into the dark. Greens stay deep and muted, never bright.",
+      "isLimited": false,
+      "sortOrder": 3,
+      "images": { "mood": "col-ember-grove" }
+    },
+    {
+      "slug": "lakeside-hush",
+      "name": "Lakeside Hush",
+      "tagline": "Still water, soft mist and the moon twice over.",
+      "description": "A wooden jetty on a lake so still it holds the moon twice: once in the sky and once at your feet. Mist gathers over the reeds and the mountains go quiet. Clean, watery and gently citrus scents, made for the moment the day finally lets go of you.",
+      "moodNote": "The end of a weathered wooden jetty over a mirror-still lake; low mist on the water; reeds; dark mountains reflected; a crescent moon and its reflection; a folded ivory linen throw. The coolest palette of all: silver-blue and indigo, the candle a small warm point.",
+      "isLimited": false,
+      "sortOrder": 4,
+      "images": { "mood": "col-lakeside-hush" }
+    },
+    {
+      "slug": "comet-season",
+      "name": "Comet Season",
+      "tagline": "A limited run for the longest, brightest winter nights.",
+      "description": "For a few weeks at the turn of the year, the nights are long, the windows frost at the edges and the house smells of orange peel and spice. Comet Season gathers bright, spiced, glowing scents for exactly that time. It is a limited edition: once these are gone, they won't be back this year.",
+      "moodNote": "A deep windowsill; a window pane frosted at its edges; a winter night sky with one faint comet and its soft, short tail over snowy mountain silhouettes; dried orange slices, cinnamon sticks and a pine sprig. The warmest accents of the range: more amber and a few more pale gold glints, still on a deep navy night.",
+      "isLimited": true,
+      "sortOrder": 5,
+      "images": { "mood": "col-comet-season" }
+    },
+    {
+      "slug": "gift-sets",
+      "name": "Gift Sets",
+      "tagline": "A little night sky, boxed and ready to give.",
+      "description": "Our gift sets pair candles that belong together, so choosing is the easy part. Each set arrives in a midnight-blue box with a ribbon, ready to hand over or to keep for yourself. Pick a trio of travel tins to explore, a reading pair for a book lover, or a limited box while the season lasts.",
+      "moodNote": "An open matte midnight-navy gift box on an ivory linen-covered table at night; travel tins nestled in ivory crinkle paper; a thin gold satin ribbon; one tin lit beside the box; a dark window with faint stars behind. Soft, generous and warm, but uncluttered.",
+      "isLimited": false,
+      "sortOrder": 6,
+      "images": { "mood": "col-gift-sets" }
+    }
+  ],
+
+  "products": [
+    {
+      "slug": "moonrise",
+      "name": "Moonrise",
+      "type": "jar",
+      "collection": "moonlit-terrace",
+      "alsoIn": [],
+      "shortDescription": "Night jasmine and bergamot on cool terrace air. An easy first candle.",
+      "longDescription": "Moonrise is the moment the moon clears the mountains and turns the terrace stones pale. Bergamot and a little pear open it, bright and clean. Night-blooming jasmine and powdery iris follow, soft rather than sweet, settling on white musk and smooth woods that linger long after the flame is out. It fills a room without crowding it, which makes it an easy first candle and an easy gift. Light it as the evening comes in and let it set the pace.",
+      "scentFamily": "floral",
+      "scentNotes": { "top": ["Bergamot", "Pear"], "heart": ["Night-blooming jasmine", "Iris"], "base": ["White musk", "Blond woods"] },
+      "variants": [
+        { "sku": "moonrise-220", "label": "220 g", "weightGrams": 220, "dimensionsCm": { "diameter": 8, "height": 9 }, "price": { "amount": 3400, "currency": "USD" }, "burnTimeHours": { "min": 45, "max": 50 }, "warmTimeHoursPerPiece": null, "pieces": null },
+        { "sku": "moonrise-380", "label": "380 g", "weightGrams": 380, "dimensionsCm": { "diameter": 9.5, "height": 11 }, "price": { "amount": 4800, "currency": "USD" }, "burnTimeHours": { "min": 75, "max": 85 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": ["bestseller"],
+      "careNotesRef": "care.jar",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-moonrise", "lifestyle": ["lif-moonrise"] },
+      "sortOrder": 1
+    },
+    {
+      "slug": "midnight-balcony",
+      "name": "Midnight Balcony",
+      "type": "jar",
+      "collection": "moonlit-terrace",
+      "alsoIn": [],
+      "shortDescription": "Violet leaf, rain-cooled stone and cedar. Fresh night air in a jar.",
+      "longDescription": "Step out onto a balcony just after a summer shower, when the stone is still wet and the air smells green and new. Midnight Balcony opens on crushed violet leaf and a breath of cool night air, softens into freesia and a clean mineral note like rain on stone, then settles on dry cedarwood and ambrette. It is fresh without being sharp, cool and green at first, then soft and woody as it burns.",
+      "scentFamily": "fresh",
+      "scentNotes": { "top": ["Violet leaf", "Night air accord"], "heart": ["Rain-on-stone accord", "Freesia"], "base": ["Cedarwood", "Ambrette"] },
+      "variants": [
+        { "sku": "midnight-balcony-220", "label": "220 g", "weightGrams": 220, "dimensionsCm": { "diameter": 8, "height": 9 }, "price": { "amount": 3400, "currency": "USD" }, "burnTimeHours": { "min": 45, "max": 50 }, "warmTimeHoursPerPiece": null, "pieces": null },
+        { "sku": "midnight-balcony-380", "label": "380 g", "weightGrams": 380, "dimensionsCm": { "diameter": 9.5, "height": 11 }, "price": { "amount": 4800, "currency": "USD" }, "burnTimeHours": { "min": 75, "max": 85 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": ["new"],
+      "careNotesRef": "care.jar",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-midnight-balcony", "lifestyle": [] },
+      "sortOrder": 2
+    },
+    {
+      "slug": "late-bloom",
+      "name": "Late Bloom",
+      "type": "tin",
+      "collection": "moonlit-terrace",
+      "alsoIn": [],
+      "shortDescription": "Tuberose and honeysuckle opening after dark. A pocket-sized floral for travel and small rooms.",
+      "longDescription": "Some flowers save their scent for the night. Late Bloom gathers them in a travel tin: dewy green leaves first, then creamy tuberose and honeysuckle, then a soft base of vanilla and moss, like a garden path after the lamps go out. The lilac-silver tin is small enough for a bedside table, a desk or a weekend bag, and the scent is gentle enough for a small room. It is also one of the three tins in the Little Constellation Set.",
+      "scentFamily": "floral",
+      "scentNotes": { "top": ["Dewy green leaves"], "heart": ["Tuberose", "Honeysuckle"], "base": ["Vanilla", "Moss"] },
+      "variants": [
+        { "sku": "late-bloom-120", "label": "120 g", "weightGrams": 120, "dimensionsCm": { "diameter": 8, "height": 4.5 }, "price": { "amount": 1800, "currency": "USD" }, "burnTimeHours": { "min": 22, "max": 26 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": [],
+      "careNotesRef": "care.tin",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-late-bloom", "lifestyle": [] },
+      "sortOrder": 3
+    },
+    {
+      "slug": "ink-and-cedar",
+      "name": "Ink & Cedar",
+      "type": "jar",
+      "collection": "starlit-library",
+      "alsoIn": [],
+      "shortDescription": "Black tea, old paper and cedarwood. The scent of a library after hours.",
+      "longDescription": "Ink & Cedar smells like the corner of a library that nobody else has found. Black tea and a pinch of cardamom open it, warm and a little spicy. At its heart is a dry, papery accord and polished cedarwood, like shelves that have held books for a century. Vetiver and soft leather give it depth as it burns. It pairs naturally with Last Chapter, and the two share a box in the Reading Nook Set.",
+      "scentFamily": "woody",
+      "scentNotes": { "top": ["Black tea", "Cardamom"], "heart": ["Old paper accord", "Cedarwood"], "base": ["Vetiver", "Soft leather"] },
+      "variants": [
+        { "sku": "ink-and-cedar-220", "label": "220 g", "weightGrams": 220, "dimensionsCm": { "diameter": 8, "height": 9 }, "price": { "amount": 3400, "currency": "USD" }, "burnTimeHours": { "min": 45, "max": 50 }, "warmTimeHoursPerPiece": null, "pieces": null },
+        { "sku": "ink-and-cedar-380", "label": "380 g", "weightGrams": 380, "dimensionsCm": { "diameter": 9.5, "height": 11 }, "price": { "amount": 4800, "currency": "USD" }, "burnTimeHours": { "min": 75, "max": 85 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": ["bestseller"],
+      "careNotesRef": "care.jar",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-ink-and-cedar", "lifestyle": ["lif-ink-and-cedar"] },
+      "sortOrder": 4
+    },
+    {
+      "slug": "last-chapter",
+      "name": "Last Chapter",
+      "type": "jar",
+      "collection": "starlit-library",
+      "alsoIn": [],
+      "shortDescription": "Honey, vanilla bean and chamomile over sandalwood. Warm, soft and made for reading late.",
+      "longDescription": "You know the feeling: one more chapter, then another, until the tea is cold and the house is silent. Last Chapter is that feeling in a jar. A drop of golden honey opens it, then vanilla bean and soft chamomile wrap around you like a blanket, settling on creamy sandalwood and tonka. It is sweet without being sugary, cozy without being heavy, and it keeps you company until the very last page.",
+      "scentFamily": "gourmand",
+      "scentNotes": { "top": ["Honey"], "heart": ["Vanilla bean", "Chamomile"], "base": ["Sandalwood", "Tonka"] },
+      "variants": [
+        { "sku": "last-chapter-220", "label": "220 g", "weightGrams": 220, "dimensionsCm": { "diameter": 8, "height": 9 }, "price": { "amount": 3400, "currency": "USD" }, "burnTimeHours": { "min": 45, "max": 50 }, "warmTimeHoursPerPiece": null, "pieces": null },
+        { "sku": "last-chapter-380", "label": "380 g", "weightGrams": 380, "dimensionsCm": { "diameter": 9.5, "height": 11 }, "price": { "amount": 4800, "currency": "USD" }, "burnTimeHours": { "min": 75, "max": 85 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": [],
+      "careNotesRef": "care.jar",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-last-chapter", "lifestyle": [] },
+      "sortOrder": 5
+    },
+    {
+      "slug": "margin-notes",
+      "name": "Margin Notes",
+      "type": "tin",
+      "collection": "starlit-library",
+      "alsoIn": [],
+      "shortDescription": "Bergamot, lemon peel and Earl Grey. A bright little tin for desks and journeys.",
+      "longDescription": "Margin Notes is the scent of a fresh pot of tea beside an open notebook. Bergamot and lemon peel make it bright and awake, Earl Grey tea gives it a smooth, slightly floral middle, and cedar with a touch of white musk keeps it grounded. In a lilac-silver travel tin, it suits a desk on a slow afternoon, a guest room or a weekend away. It is part of the Little Constellation Set, alongside Late Bloom and Quiet Shore.",
+      "scentFamily": "citrus",
+      "scentNotes": { "top": ["Bergamot", "Lemon peel"], "heart": ["Earl Grey tea"], "base": ["Cedar", "White musk"] },
+      "variants": [
+        { "sku": "margin-notes-120", "label": "120 g", "weightGrams": 120, "dimensionsCm": { "diameter": 8, "height": 4.5 }, "price": { "amount": 1800, "currency": "USD" }, "burnTimeHours": { "min": 22, "max": 26 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": [],
+      "careNotesRef": "care.tin",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-margin-notes", "lifestyle": [] },
+      "sortOrder": 6
+    },
+    {
+      "slug": "lantern-path",
+      "name": "Lantern Path",
+      "type": "pillar",
+      "collection": "ember-grove",
+      "alsoIn": [],
+      "shortDescription": "Pine needle, cedar and a thread of smoke. An ivory pillar for long evenings.",
+      "longDescription": "Picture a narrow path through the pines, lit by lanterns hung low on the branches. Lantern Path begins with crisp pine needle and a little juniper, moves into warm cedarwood with the faintest thread of birch smoke, and ends on soft amber resin. The ivory pillar stands on its own, so it looks as good unlit on a mantel as it does glowing on a table. Set it on a heat-resistant dish, and give it time: the first burn sets the shape of every burn after.",
+      "scentFamily": "woody",
+      "scentNotes": { "top": ["Pine needle", "Juniper"], "heart": ["Cedarwood", "Birch smoke"], "base": ["Amber resin"] },
+      "variants": [
+        { "sku": "lantern-path-7x10", "label": "7 × 10 cm", "weightGrams": 350, "dimensionsCm": { "diameter": 7, "height": 10 }, "price": { "amount": 2800, "currency": "USD" }, "burnTimeHours": { "min": 50, "max": 60 }, "warmTimeHoursPerPiece": null, "pieces": null },
+        { "sku": "lantern-path-7x15", "label": "7 × 15 cm", "weightGrams": 520, "dimensionsCm": { "diameter": 7, "height": 15 }, "price": { "amount": 3800, "currency": "USD" }, "burnTimeHours": { "min": 75, "max": 90 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": [],
+      "careNotesRef": "care.pillar",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-lantern-path", "lifestyle": ["lif-lantern-path"] },
+      "sortOrder": 7
+    },
+    {
+      "slug": "moss-and-ember",
+      "name": "Moss & Ember",
+      "type": "jar",
+      "collection": "ember-grove",
+      "alsoIn": [],
+      "shortDescription": "Oakmoss, smoked cedar and glowing amber. A deep, smoky jar for cold nights.",
+      "longDescription": "Moss & Ember is the clearing at the end of the path, where a fire has burned down to a red glow and the forest floor is soft underfoot. Black pepper gives it a bright, prickling start. Then comes the heart: damp green oakmoss and smoked cedar, earthy and calm. Amber and patchouli warm the base and stay in the room long after the candle is out. It is the darkest, richest scent in Ember Grove.",
+      "scentFamily": "smoky-amber",
+      "scentNotes": { "top": ["Black pepper"], "heart": ["Oakmoss", "Smoked cedar"], "base": ["Amber", "Patchouli"] },
+      "variants": [
+        { "sku": "moss-and-ember-220", "label": "220 g", "weightGrams": 220, "dimensionsCm": { "diameter": 8, "height": 9 }, "price": { "amount": 3400, "currency": "USD" }, "burnTimeHours": { "min": 45, "max": 50 }, "warmTimeHoursPerPiece": null, "pieces": null },
+        { "sku": "moss-and-ember-380", "label": "380 g", "weightGrams": 380, "dimensionsCm": { "diameter": 9.5, "height": 11 }, "price": { "amount": 4800, "currency": "USD" }, "burnTimeHours": { "min": 75, "max": 85 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": [],
+      "careNotesRef": "care.jar",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-moss-and-ember", "lifestyle": [] },
+      "sortOrder": 8
+    },
+    {
+      "slug": "fir-hollow",
+      "name": "Fir Hollow",
+      "type": "wax-melt",
+      "collection": "ember-grove",
+      "alsoIn": [],
+      "shortDescription": "Fir needle, juniper and soft moss, in six wax melts for your warmer.",
+      "longDescription": "Fir Hollow is a sheltered dip in the forest where the trees grow close and the air is cool and green. Crushed fir needle and juniper berry open it, soft moss sits at the center, and cedar with the faintest hint of smoke rounds it off. Each clamshell holds six sage-green cubes. Warm one or two at a time in a wax warmer, and when the scent fades, swap in a fresh cube.",
+      "scentFamily": "woody",
+      "scentNotes": { "top": ["Fir needle", "Juniper berry"], "heart": ["Moss"], "base": ["Cedar", "Soft smoke"] },
+      "variants": [
+        { "sku": "fir-hollow-6", "label": "6 cubes, 80 g", "weightGrams": 80, "dimensionsCm": null, "price": { "amount": 1200, "currency": "USD" }, "burnTimeHours": null, "warmTimeHoursPerPiece": 8, "pieces": 6 }
+      ],
+      "badges": [],
+      "careNotesRef": "care.melt",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-fir-hollow", "lifestyle": [] },
+      "sortOrder": 9
+    },
+    {
+      "slug": "still-water",
+      "name": "Still Water",
+      "type": "jar",
+      "collection": "lakeside-hush",
+      "alsoIn": [],
+      "shortDescription": "Water lily, white tea and driftwood. As calm as a lake at midnight.",
+      "longDescription": "Still Water is the hour when the wind drops and the lake turns to glass. Cool lake air and a little pear open it. Water lily and white tea make a clear, gentle heart, and pale driftwood and soft musk settle underneath like the last of the mist. It is our quietest scent: light enough for a bedroom or a bath, but present enough to notice every time you walk into the room.",
+      "scentFamily": "fresh",
+      "scentNotes": { "top": ["Lake air accord", "Pear"], "heart": ["Water lily", "White tea"], "base": ["Driftwood", "Soft musk"] },
+      "variants": [
+        { "sku": "still-water-220", "label": "220 g", "weightGrams": 220, "dimensionsCm": { "diameter": 8, "height": 9 }, "price": { "amount": 3400, "currency": "USD" }, "burnTimeHours": { "min": 45, "max": 50 }, "warmTimeHoursPerPiece": null, "pieces": null },
+        { "sku": "still-water-380", "label": "380 g", "weightGrams": 380, "dimensionsCm": { "diameter": 9.5, "height": 11 }, "price": { "amount": 4800, "currency": "USD" }, "burnTimeHours": { "min": 75, "max": 85 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": [],
+      "careNotesRef": "care.jar",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-still-water", "lifestyle": ["lif-still-water"] },
+      "sortOrder": 10
+    },
+    {
+      "slug": "lakelight",
+      "name": "Lakelight",
+      "type": "pillar",
+      "collection": "lakeside-hush",
+      "alsoIn": [],
+      "shortDescription": "Peach blossom, clean linen and lotus. A pale pillar that glows like moonlight on water.",
+      "longDescription": "Lakelight is moonlight on the water seen from an open boathouse door, silver and soft. Peach blossom gives it a gentle, fresh start, a clean linen accord and lotus form the heart, and blond woods keep it light and warm underneath. The ivory pillar catches its own flame and glows through the wax as it burns down, which is why we named it after the lake. Stand it on a heat-resistant dish, away from drafts, for an even burn.",
+      "scentFamily": "fresh",
+      "scentNotes": { "top": ["Peach blossom"], "heart": ["Clean linen accord", "Lotus"], "base": ["Blond woods"] },
+      "variants": [
+        { "sku": "lakelight-7x10", "label": "7 × 10 cm", "weightGrams": 350, "dimensionsCm": { "diameter": 7, "height": 10 }, "price": { "amount": 2800, "currency": "USD" }, "burnTimeHours": { "min": 50, "max": 60 }, "warmTimeHoursPerPiece": null, "pieces": null },
+        { "sku": "lakelight-7x15", "label": "7 × 15 cm", "weightGrams": 520, "dimensionsCm": { "diameter": 7, "height": 15 }, "price": { "amount": 3800, "currency": "USD" }, "burnTimeHours": { "min": 75, "max": 90 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": [],
+      "careNotesRef": "care.pillar",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-lakelight", "lifestyle": [] },
+      "sortOrder": 11
+    },
+    {
+      "slug": "quiet-shore",
+      "name": "Quiet Shore",
+      "type": "tin",
+      "collection": "lakeside-hush",
+      "alsoIn": [],
+      "shortDescription": "Yuzu, fig leaf and cool driftwood. Bright, clean and travel-sized.",
+      "longDescription": "Quiet Shore is the far side of the lake, where the path ends at a pebble beach and nobody else comes. Sparkling yuzu wakes it up, green fig leaf and a cool mineral note like wet pebbles give it shape, and pale driftwood keeps it soft. The lilac-silver tin is made for small spaces and short trips. Light it on a bathroom shelf, a bedside table or a desk by the window.",
+      "scentFamily": "citrus",
+      "scentNotes": { "top": ["Yuzu"], "heart": ["Fig leaf", "Wet pebble accord"], "base": ["Driftwood"] },
+      "variants": [
+        { "sku": "quiet-shore-120", "label": "120 g", "weightGrams": 120, "dimensionsCm": { "diameter": 8, "height": 4.5 }, "price": { "amount": 1800, "currency": "USD" }, "burnTimeHours": { "min": 22, "max": 26 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": ["new"],
+      "careNotesRef": "care.tin",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-quiet-shore", "lifestyle": [] },
+      "sortOrder": 12
+    },
+    {
+      "slug": "gilded-plum",
+      "name": "Gilded Plum",
+      "type": "wax-melt",
+      "collection": "comet-season",
+      "alsoIn": [],
+      "shortDescription": "Sugared plum, pink pepper and amber, with a gold shimmer. Limited to Comet Season.",
+      "longDescription": "Gilded Plum is a small winter indulgence, as rich as a bowl of dark fruit set out for friends on a cold evening. Pink pepper sparkles at the top, sugared plum makes a deep, jammy heart, and amber and vanilla glow underneath. The pale lilac cubes carry a fine gold shimmer, so the melted wax glints in the warmer. It is limited to Comet Season, so when this batch is gone, it is gone for the year.",
+      "scentFamily": "gourmand",
+      "scentNotes": { "top": ["Pink pepper"], "heart": ["Sugared plum"], "base": ["Amber", "Vanilla"] },
+      "variants": [
+        { "sku": "gilded-plum-6", "label": "6 cubes, 80 g", "weightGrams": 80, "dimensionsCm": null, "price": { "amount": 1400, "currency": "USD" }, "burnTimeHours": null, "warmTimeHoursPerPiece": 8, "pieces": 6 }
+      ],
+      "badges": ["limited"],
+      "careNotesRef": "care.melt",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-gilded-plum", "lifestyle": ["lif-comet-season"] },
+      "sortOrder": 13
+    },
+    {
+      "slug": "comet-tail",
+      "name": "Comet Tail",
+      "type": "jar",
+      "collection": "comet-season",
+      "alsoIn": [],
+      "shortDescription": "Blood orange, clove and smoked vanilla. A glowing, spiced jar for the longest nights.",
+      "longDescription": "Comet Tail is a bright streak across a winter sky, warm at its head and trailing smoke behind. Juicy blood orange opens it, clove and cinnamon bark build a spiced, glowing heart, and smoked vanilla and amber leave a long, warm trail. It is cheerful and cozy at once, made for long nights, snow on the sill and slow evenings at home. Comet Tail is a limited edition for Comet Season and comes in the 220 g jar only.",
+      "scentFamily": "smoky-amber",
+      "scentNotes": { "top": ["Blood orange"], "heart": ["Clove", "Cinnamon bark"], "base": ["Smoked vanilla", "Amber"] },
+      "variants": [
+        { "sku": "comet-tail-220", "label": "220 g", "weightGrams": 220, "dimensionsCm": { "diameter": 8, "height": 9 }, "price": { "amount": 3600, "currency": "USD" }, "burnTimeHours": { "min": 45, "max": 50 }, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": ["limited", "new"],
+      "careNotesRef": "care.jar",
+      "giftSetContents": null,
+      "images": { "catalog": "cat-comet-tail", "lifestyle": ["lif-comet-season"] },
+      "sortOrder": 14
+    },
+    {
+      "slug": "little-constellation-set",
+      "name": "Little Constellation Set",
+      "type": "gift-set",
+      "collection": "gift-sets",
+      "alsoIn": [],
+      "shortDescription": "Three travel tins, three moods: Late Bloom, Margin Notes and Quiet Shore.",
+      "longDescription": "Can't choose a favorite? Start with three. The Little Constellation Set brings together one travel tin from each of three collections: Late Bloom, a soft after-dark floral from Moonlit Terrace; Margin Notes, bright bergamot and Earl Grey from Starlit Library; and Quiet Shore, fresh yuzu and driftwood from Lakeside Hush. They arrive side by side in a midnight-blue gift box, ready to give, or to try one by one and find the scent that feels most like your evenings.",
+      "scentFamily": null,
+      "scentNotes": null,
+      "variants": [
+        { "sku": "little-constellation-set", "label": "Set of 3 tins", "weightGrams": 360, "dimensionsCm": null, "price": { "amount": 4900, "currency": "USD" }, "burnTimeHours": null, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": ["new"],
+      "careNotesRef": "care.tin",
+      "giftSetContents": [
+        { "productSlug": "late-bloom", "sku": "late-bloom-120", "quantity": 1 },
+        { "productSlug": "margin-notes", "sku": "margin-notes-120", "quantity": 1 },
+        { "productSlug": "quiet-shore", "sku": "quiet-shore-120", "quantity": 1 }
+      ],
+      "images": { "catalog": "cat-little-constellation-set", "lifestyle": ["lif-little-constellation-set"] },
+      "sortOrder": 15
+    },
+    {
+      "slug": "reading-nook-set",
+      "name": "Reading Nook Set",
+      "type": "gift-set",
+      "collection": "gift-sets",
+      "alsoIn": ["starlit-library"],
+      "shortDescription": "Ink & Cedar and Last Chapter, two Starlit Library jars boxed together for a book lover.",
+      "longDescription": "The Reading Nook Set pairs two Starlit Library jars, each in the 220 g size. Ink & Cedar, with black tea, old paper and cedarwood, is for the first chapter, when the evening is still young. Last Chapter, with honey, vanilla bean and sandalwood, is for the end of the night, when you promise yourself just one more page. Boxed together in midnight blue, it makes an easy gift for anyone who always has a book on the go.",
+      "scentFamily": null,
+      "scentNotes": null,
+      "variants": [
+        { "sku": "reading-nook-set", "label": "Set of 2 jars", "weightGrams": 440, "dimensionsCm": null, "price": { "amount": 6000, "currency": "USD" }, "burnTimeHours": null, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": [],
+      "careNotesRef": "care.jar",
+      "giftSetContents": [
+        { "productSlug": "ink-and-cedar", "sku": "ink-and-cedar-220", "quantity": 1 },
+        { "productSlug": "last-chapter", "sku": "last-chapter-220", "quantity": 1 }
+      ],
+      "images": { "catalog": "cat-reading-nook-set", "lifestyle": [] },
+      "sortOrder": 16
+    },
+    {
+      "slug": "comet-season-gift-box",
+      "name": "Comet Season Gift Box",
+      "type": "gift-set",
+      "collection": "gift-sets",
+      "alsoIn": ["comet-season"],
+      "shortDescription": "Comet Tail jar and Gilded Plum wax melts, boxed together while the season lasts.",
+      "longDescription": "The Comet Season Gift Box brings our two limited scents together. Comet Tail, a 220 g jar of blood orange, clove and smoked vanilla, is for lighting on the longest evenings. Gilded Plum, six shimmering wax melts of sugared plum, pink pepper and amber, is for the warmer on the nights in between. Both arrive in a midnight-blue box tied with gold ribbon. Like everything in Comet Season, it is limited, and it will not be restocked this year.",
+      "scentFamily": null,
+      "scentNotes": null,
+      "variants": [
+        { "sku": "comet-season-gift-box", "label": "Jar and wax melts", "weightGrams": 300, "dimensionsCm": null, "price": { "amount": 4500, "currency": "USD" }, "burnTimeHours": null, "warmTimeHoursPerPiece": null, "pieces": null }
+      ],
+      "badges": ["limited"],
+      "careNotesRef": "care.jar",
+      "giftSetContents": [
+        { "productSlug": "comet-tail", "sku": "comet-tail-220", "quantity": 1 },
+        { "productSlug": "gilded-plum", "sku": "gilded-plum-6", "quantity": 1 }
+      ],
+      "images": { "catalog": "cat-comet-season-gift-box", "lifestyle": [] },
+      "sortOrder": 17
+    }
+  ],
+
+  "microcopy": {
+    "typeLabels": {
+      "jar": "Scented jar",
+      "pillar": "Pillar candle",
+      "tin": "Travel tin",
+      "wax-melt": "Wax melts",
+      "gift-set": "Gift set"
+    },
+    "typeLabelsInline": {
+      "jar": "scented jar",
+      "pillar": "pillar candle",
+      "tin": "travel tin",
+      "wax-melt": "wax melts",
+      "gift-set": "gift set"
+    },
+    "badgeLabels": {
+      "bestseller": "Bestseller",
+      "new": "New",
+      "limited": "Limited"
+    },
+    "scentNotes": {
+      "sectionHeading": "Scent notes",
+      "familyLabel": "Scent family",
+      "top": "Top notes",
+      "heart": "Heart notes",
+      "base": "Base notes"
+    },
+    "specs": {
+      "burnTimeLabel": "Burn time",
+      "burnTimeRange": "About {min}–{max} hours",
+      "meltTime": "About {hours} hours of scent per cube",
+      "giftSetBurnTime": "Burn times are listed on each candle's own page.",
+      "weightLabel": "Weight",
+      "weight": "{weight} g",
+      "sizeLabel": "Size",
+      "pieces": "{pieces} cubes"
+    },
+    "giftSet": {
+      "heading": "In the box",
+      "line": "{name}, {typeLabelInline} ({weight} g)",
+      "lineWithQuantity": "{quantity} × {name}, {typeLabelInline} ({weight} g)",
+      "lineWaxMelt": "{name}, wax melts ({pieces} cubes, {weight} g)",
+      "packaging": "Arrives in a midnight-blue gift box with a gold ribbon.",
+      "worthSeparately": "Worth {total} if bought separately",
+      "example": [
+        "Ink & Cedar, scented jar (220 g)",
+        "Last Chapter, scented jar (220 g)",
+        "Arrives in a midnight-blue gift box with a gold ribbon.",
+        "Worth $68.00 if bought separately"
+      ]
+    },
+    "care": {
+      "heading": "Caring for your candle",
+      "intro": "A few small habits keep the flame steady and the scent full to the last evening.",
+      "jar": [
+        "Trim the wick to 5 mm before every burn.",
+        "On the first burn, let the wax melt all the way to the edge of the jar. This takes about 2 to 3 hours for the 220 g jar and 3 to 4 hours for the 380 g jar.",
+        "Burn for no more than 4 hours at a time, then let the candle cool before you light it again.",
+        "Keep it away from drafts, curtains and anything that can catch fire, and out of reach of children and pets.",
+        "Never leave a burning candle unattended. Stop when about 1 cm of wax is left in the jar.",
+        "The glass gets hot. Put the lid back on only once the flame is out and the jar has cooled."
+      ],
+      "pillar": [
+        "Trim the wick to 5 mm before every burn.",
+        "Always stand the pillar on a heat-resistant dish or plate.",
+        "On the first burn, let the melt pool spread to about 1 cm from the edge, so the candle burns evenly.",
+        "Burn for no more than 4 hours at a time, then let it cool before you light it again.",
+        "Keep it away from drafts, curtains and anything that can catch fire, and out of reach of children and pets.",
+        "Never leave a burning candle unattended. Stop when about 2 cm of wax is left."
+      ],
+      "tin": [
+        "Trim the wick to 5 mm before every burn.",
+        "On the first burn, let the wax melt all the way to the edge of the tin. This takes about 1 to 2 hours.",
+        "Burn for no more than 4 hours at a time, then let the tin cool before you light it again.",
+        "The tin gets hot. Stand it on a heat-resistant surface and don't move it while it is lit.",
+        "Keep it away from drafts, curtains and anything that can catch fire, and out of reach of children and pets.",
+        "Never leave a burning candle unattended. Put the lid back on only once the flame is out and the tin has cooled."
+      ],
+      "melt": [
+        "Use one or two cubes at a time in a wax warmer made for melts.",
+        "Never heat wax melts over an open flame or in a pan.",
+        "Never leave a warmer unattended, and switch it off or put out its tea light when you leave the room.",
+        "Keep the warmer away from drafts and out of reach of children and pets. Melted wax is hot.",
+        "When the scent fades, let the wax cool and set before you lift it out and add fresh cubes."
+      ]
+    }
+  }
+}

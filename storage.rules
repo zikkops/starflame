@@ -1,0 +1,30 @@
+rules_version = '2';
+
+// Starflames Storage rules (M1.5, design/tech/M1.5-security-rules.md).
+// Default deny: any path not matched below is refused. The Admin SDK (the M1.8 seed, M7
+// server code) bypasses these rules.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.get('admin', false) == true;
+    }
+
+    // Product images (art-direction §9.2): products/<productSlug>/<imageId>.<ext>.
+    // get only: a list would reveal every product folder, drafts included, and their images.
+    match /products/{allPaths=**} {
+      allow get: if true;
+    }
+
+    // Writes: admin claim only, one level deep, names as the storagePath guard
+    // (lib/domain/schemas.ts) allows, an image type from the allowlist, under 10 MB.
+    match /products/{slug}/{file} {
+      allow create, update: if isAdmin()
+        && slug.matches('^[a-z0-9-]+$')
+        && file.matches('^[a-z0-9-]+[.](png|jpe?g|webp|avif)$')
+        && request.resource.contentType in ['image/png', 'image/jpeg', 'image/webp', 'image/avif']
+        && request.resource.size < 10 * 1024 * 1024;
+      allow delete: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,28 @@
+/*
+ * Utilities for the dev-only pages, loaded only on /dev routes (app/dev/layout.tsx).
+ * app/globals.css skips ./dev (`@source not`), so these classes never reach the
+ * stylesheet that every production route loads. The theme and base styles come
+ * from globals.css by reference and are not emitted again. Some CSS is: the
+ * reference brings globals.css's @source dirs too, so every utility the app uses
+ * outside /dev (today .type-display-1 with its italic rule, the Wordmark's and the
+ * home page's classes) and Tailwind's @layer properties block appear in both.
+ * A plain production build still emits this chunk into .next/static, and the
+ * /dev/tokens 404 links it: dev utilities only, no page content (accepted, M1.11).
+ * A directory or glob source is overridden by that `not`; files listed one by one
+ * are not. Add each new dev page here.
+ */
+@reference "../globals.css";
+@source "./tokens/page.tsx";
+@source "./header/page.tsx";
+@source "./header/HeaderPreviewControls.tsx";
+@source "./footer/page.tsx";
+@source "./footer/minimal/page.tsx";
+@source "./footer/FooterPreviewControls.tsx";
+@source "./footer/FooterPreviewIntro.tsx";
+@source "./starfield/page.tsx";
+@source "./starfield/still/page.tsx";
+@source "./starfield/no-streak/page.tsx";
+@source "./starfield/streak-demo/page.tsx";
+@source "./starfield/streak-blocked/page.tsx";
+@source "./starfield/StarfieldPreviewPage.tsx";
+@tailwind utilities source(none);
