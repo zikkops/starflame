@@ -518,3 +518,10 @@ Entry format:
 - Result: `npm run seed` (emulator-only, loopback hosts only, fixed timestamps, md5-skip uploads, `--reset`), seed-only fixtures (draft + archived), `npm run images:build` (sharp: 6 lif crops, 8 /public JPEGs), cache clearing, e2e seeds before building with the `.env.example` fallback, `scripts/build-preflight.mjs` hand-off for M2.3/M2.4, `npm run test:seed` (20). `assets/` git-ignored except manifest.json.
 - QA verdict: PASS (2 minors: the TASKS.md M1.8 wording (fixed at tick); optional: the seed CLI guard tests should run independently of the seeded hook on a fresh clone). Consolidated M1 run all green: tsc, typecheck, lint, format, unit 70, seed 20, repos 19, rules 251, smoke 6, plain build, client-bundle, e2e 218/30 + @perf 15/1, 40 screenshots; images:build idempotent; audit at the 20 baseline (sharp added none). Safety probes: zero DNS/TCP for every non-demo/non-loopback case. A real fresh `git clone` of HEAD gives the clear "copy assets/images" message.
 - Notes: **M1 Foundation complete (23/23).** Stopping for the M1 gate. Items for the user at the gate: 7 flagged dev-placeholder images; C2PA stripping; assets/ local-only for other machines; pre-launch TODOs (Pinterest EPS, legal trading name, USD currency); 4 known high advisories in prod deps (firebase → grpc-js); the starfield brightness (0.14 cap) check; confirm the resumed-commits CLAUDE.md step 7 (user-instructed 2026-10-10).
+
+## 2026-10-10 — M1 gate
+- Agent: orchestrator
+- Step: milestone gate
+- Result: M1 summary + 26 screenshots (http://localhost:3002/m1) shown to the user. The user said "CONTINUE".
+- QA verdict: n/a
+- Notes: The user didn't answer the open questions, so the stated defaults apply: "Bag"; USD; © "Starflames"; starfield kept subtle (0.14 cap); no hand-poured/maker claim (brand-story image stays on hold); Gilded Plum shimmer kept as [confirm with user]; search later; socials hidden. **Blocked on the user:** M2.5a/M2.5b privacy policy text (legal text from the user/adviser) → M2.7 newsletter (consent links to /privacy) waits for it. M2 proceeds with M2.1–M2.6.

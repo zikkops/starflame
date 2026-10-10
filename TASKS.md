@@ -34,7 +34,7 @@ Visuals first (user request, 2026-10-09). Two parallel tracks; within a track, o
 - [x] M1.6 (T) Repositories (`getProducts`, `getProductBySlug`, `getCollections`, `getCollectionBySlug`, ...)
 - [x] M1.8 (T) Seed script with typed mock products + the generated imagery into the emulator (`npm run seed`) — needs M1.7. Acceptance also: lif crops + /public JPEG export + header size checks (M1.4); draft products seeded without images; the seed clears the Next data cache; the e2e build loads `.env.example` when `.env.local` is missing and seeds before building; a plain build without emulators fails loudly from the first task that calls a repository from a page (hand-off: `scripts/build-preflight.mjs`, M2.3/M2.4) (M1.6 pushback 1)
 
-- [ ] **M1 gate:** summary + screenshots to user
+- [x] **M1 gate:** summary + screenshots to user
 
 ## M2 Home
 
