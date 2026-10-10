@@ -6,6 +6,8 @@ Builds on [`layout-shell.md`](../components/layout-shell.md) (§4 Container and 
 
 ## Changelog
 
+**M2.2 spec-review minor 1** (2026-10-10): §3.9: the md hero `sizes` is **`133.3vw`** (was `134vw`), so iPad portrait (768, DPR 2) fetches w=2048, not w=3840.
+
 **Post-pass minors from the hero follow-up review** (2026-10-10)
 
 1. §3.6, §9, §14: the build-review acceptance measure is the last reveal animation's own end time, read from `document.getAnimations()` as `startTime + delay + duration` on the document timeline and compared with the FCP entry's `startTime`. The `animationend` event time is recorded as a secondary figure only: under hydration long tasks on 4× CPU it can be dispatched late even when the compositor animation finished on time. The FCP + 1.0 s limit is unchanged.
@@ -353,7 +355,7 @@ Rendered with Next's `getImageProps()` art-direction pattern: one call per sourc
 
 ```
 <picture>
-  <source media="(min-width: 48rem)" srcSet={desktop.srcSet} sizes="(min-width: 64rem) 81vw, 134vw" />
+  <source media="(min-width: 48rem)" srcSet={desktop.srcSet} sizes="(min-width: 64rem) 81vw, 133.3vw" />
   <img {...mobile} sizes="100vw" alt="…" fetchPriority="high" loading="eager" decoding="async"
        class="size-full object-cover" />
 </picture>
@@ -361,7 +363,7 @@ Rendered with Next's `getImageProps()` art-direction pattern: one call per sourc
 
 - **`sizes` is the image's rendered width, not the box's** (with `object-fit: cover` the image is wider than its box):
   - base: the box is 100vw wide, and the 4:5 image fills the width → `100vw`.
-  - md: the 4:3 box is 100vw wide, and the 16:9 image is scaled to the box height → 576 × 16/9 = 1024px at 768 = `134vw`.
+  - md: the 4:3 box is 100vw wide, and the 16:9 image is scaled to the box height → 576 × 16/9 = 1024px at 768 = `133.3vw` (rounded down, not up: at 768 and DPR 2 it asks for 2047.5px, so the w=2048 candidate is picked; `134vw` asked for 2058px and fetched w=3840, about 33% more bytes).
   - lg+: the box height × 16/9 = 826px at 1024 and 1157px at 1440 ≈ `81vw`. At 1920 (capped box) it is 1365px ≈ 71vw, so `81vw` slightly over-fetches there, which is accepted.
 - **Priority:** the hero image is the **only** high-priority, eager image on the page. Every other image on home is lazy (§4, §6).
 - **Preload:** Next can't preload both art-directed sources with one hint. tech-agent decides whether to preload the mobile source only (mobile-first audience) with `<link rel="preload" as="image" imagesrcset … media="(max-width: 47.99rem)">`, and checks the Next 16.4 docs for `getImageProps` with `preload` / `priority` (§14).
