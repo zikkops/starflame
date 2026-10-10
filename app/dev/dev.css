@@ -25,4 +25,5 @@
 @source "./starfield/streak-demo/page.tsx";
 @source "./starfield/streak-blocked/page.tsx";
 @source "./starfield/StarfieldPreviewPage.tsx";
+@source "./hero/page.tsx";
 @tailwind utilities source(none);

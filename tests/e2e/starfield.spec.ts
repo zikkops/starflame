@@ -114,10 +114,13 @@ for (const width of [390, 1440, 1684, 1920, 2560]) {
 }
 
 // ── 8-11. States ────────────────────────────────────────────────────────────
+// The "animating" checks use /dev/starfield (the public behaviour, preview {})
+// rather than "/": home's first band is the solid hero (M2.2), so at scroll 0
+// no plain band is in view there and the sky is correctly paused (§6).
 test("8. animating, with one running animation per twinkle", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto(SF.live);
   await waitForState(page, "animating");
   const states = await slotAnimations(page);
   expect(states).toEqual(Array(twinkles()).fill("running"));
@@ -551,7 +554,7 @@ test(
     page.on("response", (response) => {
       if (response.url().endsWith(".js")) scripts.push(response);
     });
-    await page.goto("/");
+    await page.goto(SF.live);
     await waitForState(page, "animating");
     const bodies = await Promise.all(
       scripts.map(async (r) => [r.url(), await r.body()] as const),
@@ -752,7 +755,7 @@ test(
   "15. animated elements: at most 32, each border box at most 16 x 16",
   { tag: "@perf" },
   async ({ page }) => {
-    await page.goto("/");
+    await page.goto(SF.live);
     await waitForState(page, "animating");
     const boxes = await page.evaluate(() =>
       document
@@ -775,7 +778,7 @@ test(
   "15. no layout shift from the layer; LCP is never in it",
   { tag: "@perf" },
   async ({ page }) => {
-    await page.goto("/");
+    await page.goto(SF.live);
     await waitForState(page, "animating");
     // Strict: no slack. Each shift's sources are annotated, so a failure names its cause.
     const cls = await layoutShifts(page);
@@ -827,6 +830,7 @@ const ROUTES = [
   "/dev/header",
   "/dev/footer",
   "/dev/footer/minimal",
+  "/dev/hero",
   ...Object.values(SF),
 ];
 

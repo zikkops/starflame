@@ -160,17 +160,6 @@ test("the header reserves its height and causes no layout shift", async ({
   expect((await header.boundingBox())!.height).toBe(headerHeight(page));
 });
 
-test("a short page keeps the footer at the bottom of the screen", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const [footerBottom, viewport] = await page.evaluate(() => [
-    document.querySelector("body > footer")!.getBoundingClientRect().bottom,
-    window.innerHeight,
-  ]);
-  expect(footerBottom).toBeCloseTo(viewport, 0);
-});
-
 test("the starfield slot is fixed, hidden, not focusable and behind content", async ({
   page,
 }) => {
@@ -209,27 +198,70 @@ test("adjacent bands on the same background share one --section-y", async ({
   page,
 }) => {
   await page.goto("/");
-  const pads = await page.evaluate(() => {
-    const main = document.querySelector("main")!;
-    main.insertAdjacentHTML(
-      "beforeend",
-      ["plain", "solid", "sunken", "sunken", "haze", "solid"]
-        .map((band) => `<section data-band="${band}"><p>x</p></section>`)
-        .join(""),
-    );
-    return [...main.querySelectorAll("[data-band]")].map(
-      (el) => getComputedStyle(el).paddingTop,
-    );
-  });
+  // In a wrapper of their own, so the page's own bands (the home hero) don't
+  // take part. "solid+flush" is a band with data-flush-end (a hero ending in
+  // its image, layout-shell.md §5.1 as amended in M2.1).
+  const bands = [
+    "plain",
+    "solid",
+    "sunken",
+    "sunken",
+    "haze",
+    "solid",
+    "solid+flush",
+    "plain",
+    "plain",
+    "solid+flush",
+  ];
+  const pads = await page.evaluate((list) => {
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = list
+      .map((band) => {
+        const [name, flush] = band.split("+");
+        return `<section data-band="${name}"${flush ? " data-flush-end" : ""}><p>x</p></section>`;
+      })
+      .join("");
+    document.querySelector("main")!.append(wrapper);
+    return [...wrapper.children].map((el) => {
+      const style = getComputedStyle(el);
+      return `${style.paddingTop} ${style.paddingBottom}`;
+    });
+  }, bands);
   const y = (page.viewportSize()?.width ?? 0) >= 1440 ? "128px" : "64px";
-  // Home's plain section, then: plain and solid collapse (both bg-page), sunken
-  // keeps its padding, sunken after sunken collapses, haze and the solid after
-  // it keep theirs.
-  expect(pads).toEqual([y, "0px", "0px", y, "0px", y, y]);
+  // plain and solid collapse (both bg-page), sunken keeps its padding, sunken
+  // after sunken collapses, haze and the solid after it keep theirs; a solid
+  // after a solid collapses even when it is flush-ending; the plain after a
+  // flush-ending band keeps its top (the first band already ends at 0); a
+  // flush-ending band has no bottom padding, unless it is the last band.
+  expect(pads).toEqual([
+    `${y} ${y}`,
+    `0px ${y}`,
+    `${y} ${y}`,
+    `0px ${y}`,
+    `${y} ${y}`,
+    `${y} ${y}`,
+    "0px 0px",
+    `${y} ${y}`,
+    `0px ${y}`,
+    `0px ${y}`,
+  ]);
 });
 
 test.describe("not found", () => {
   test.use({ expectedIssues: [/this-page-does-not-exist/] });
+
+  // The 404 page is the shell's short page (home is taller than a screen since
+  // the M2.2 hero).
+  test("a short page keeps the footer at the bottom of the screen", async ({
+    page,
+  }) => {
+    await page.goto(MISSING);
+    const [footerBottom, viewport] = await page.evaluate(() => [
+      document.querySelector("body > footer")!.getBoundingClientRect().bottom,
+      window.innerHeight,
+    ]);
+    expect(footerBottom).toBeCloseTo(viewport, 0);
+  });
 
   test("an unknown URL is a 404 inside the shell", async ({ page }) => {
     const response = await page.goto(MISSING);

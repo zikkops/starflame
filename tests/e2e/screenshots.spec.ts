@@ -10,6 +10,7 @@ const ROUTES = [
   "/dev/header",
   "/dev/footer",
   "/dev/footer/minimal",
+  "/dev/hero",
 ];
 
 for (const route of ROUTES) {
@@ -88,3 +89,16 @@ test("screenshot dev-header-scrolled", async ({ page }, testInfo) => {
     fullPage: false,
   });
 });
+
+// The hero's first view (design/pages/home.md §2.4, §3.2, §14): "/" as shipped
+// in M2.2 (no CTAs yet, §3.7), and /dev/hero with both CTAs, as M2.3/M2.4 will
+// show it. Viewport only; captureRoute waits for the entrance to finish.
+for (const [route, name] of [
+  ["/", "home-hero"],
+  ["/dev/hero", "dev-hero-viewport"],
+] as const) {
+  test(`screenshot ${name}`, { tag: "@motion" }, async ({ page }, testInfo) => {
+    await page.goto(route);
+    await captureRoute(page, route, testInfo, { name, fullPage: false });
+  });
+}

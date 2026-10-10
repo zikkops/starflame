@@ -581,3 +581,17 @@ Entry format:
 - Result: design/tech/M2.2-hero.md revised to the CSS-only first-paint entrance (motion.md §5.1): @keyframes hero-reveal, [data-hero-reveal] with --reveal-order classes, gated on prefers-reduced-motion: no-preference and html:not([data-motion="off"]). Retired app/hero-pending.ts, the head script, suppressHydrationWarning and the .hero-pending rule. gsap dropped from M2.2 (moves to M2.3). Probe (slow 4G, 4× CPU, 390, /dev/hero, 5 runs): FCP 864 ms, last reveal animation end FCP + 889 ms (882–889; ≤ 1,000 ms), animationend FCP + 907 ms, LCP hero img 1,764 ms, CLS 0. First-load JS on / is unchanged from M1 (190,082 B gzipped). Prototype e2e: 266 passed / 34 skipped, @perf 15 passed.
 - QA verdict: PASS (spec), 3 non-blocking minors: (1) [design] home.md §3.9 sizes 134vw over-fetches w=3840 at exactly 768@2x; 133.3vw would fetch w=2048 (−33%). (2) [tech] e2e 15's 1.5 s DOMContentLoaded bound is a wall-clock budget, so move it to @perf. (3) [tech] Known flake: one HTTP 500 for a static chunk from next start in prototype run 1 (shell.spec 400% zoom), not reproduced; investigate if it recurs.
 - Notes: PUSHBACK 1 resolved. No new dependencies.
+
+## 2026-10-10 — M3.1 Product card spec: review → FAIL (round 1)
+- Agent: design-agent (spec), qa-agent (review)
+- Step: spec review
+- Result: design/components/product-card.md written. It uses only ProductCard projection fields, a stretched-name-link card with a sibling QuickAdd island behind features["quick-add"], badges Sold out/Limited/New/Bestseller (max 2), and shop/collection grids 2/3/3/4.
+- QA verdict: FAIL. Blocking: (1) the "Product links on" client checkbox can't toggle a Server Component's <a>; (2) the synthetic missing-image card's Storage 4xx trips the M1.20 fixture, contradicting check 21. Minors 3–14: footer.md §3.2.2 rows + home.md §6 pointer, ::after radius, double focus ring, the 8px target-spacing exception, the 3-col list grid exception, CART_LIMITS + lines-full copy, reduced-motion transitions, sold-out for screen readers, message length at 320, locator scoping/unique ids, a description-rule e2e check, the M5.4/M4.3 flag wording.
+- Notes: User questions (§16) have defaults in force; asked the user. design-agent has no Edit tool; the orchestrator applies its exact replacements to other files.
+
+## 2026-10-10 — M2.2 Hero: build → PASS, closed
+- Agent: tech-agent (build), qa-agent (build review)
+- Step: close
+- Result: Hero built per design/tech/M2.2-hero.md: HomeHero, hero-actions, ui/button, /dev/hero, home.spec.ts, a CSS-only entrance; app/hero-pending.ts retired. Sizes `(min-width: 64rem) 81vw, 133.3vw` (768@2x → w=2048, e2e 4b). e2e 15 split, with the 1.5 s bound in @perf 15b. M1.11/M1.13 tech specs carry the "superseded by M2.2" notes and the band blocks are resynced. QA re-ran build/lint/tsc/client-bundle/e2e (267 passed / 35 skipped; @perf 17/1), contrast AA, keyboard/focus, alt, reduced motion, CLS 0, LCP hero img, no gsap, no Firebase changes, IP clean. First-load JS on / is +0 B vs M1. The HTTP 500 flake was not seen.
+- QA verdict: PASS. 1 non-blocking minor for M2.3: tests/e2e/home.spec.ts:383 test title says "press colour" but doesn't assert the active state (ember-500 + scale 0.98). Assert it or retitle.
+- Notes: No new dependencies. CLAUDE.md Commands updated (dev-hero screenshots, home.spec.ts, /dev/hero, seed-cli tests). Stray firestore-debug.log deleted.

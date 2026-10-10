@@ -4,7 +4,6 @@ import { WordmarkSprite } from "@/components/brand/Wordmark";
 import { SkipLink } from "@/components/layout/SkipLink";
 
 import { cormorant, cormorantItalic, jost } from "./fonts";
-import { HERO_PENDING_SCRIPT } from "./hero-pending";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -28,17 +27,13 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    // suppressHydrationWarning: the head script adds `hero-pending` to <html>
-    // before React hydrates (motion.md §5.1). It applies to <html>'s own
-    // attributes only, not to its children.
+    // No head script and no suppressHydrationWarning: nothing changes <html>
+    // before hydration (the hero entrance is CSS only, motion.md §5.1). M8.8b's
+    // data-motion head script will need suppressHydrationWarning back.
     <html
       lang="en"
       className={`${jost.variable} ${cormorant.variable} ${cormorantItalic.variable}`}
-      suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: HERO_PENDING_SCRIPT }} />
-      </head>
       <body>
         <SkipLink />
         <WordmarkSprite />

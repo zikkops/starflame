@@ -117,3 +117,25 @@ export function CrescentIcon({ className, decorative }: GlyphProps) {
     </Filled>
   );
 }
+
+/**
+ * The 16px arrow after a text link ("See all collections", "Explore
+ * collections"): 1.5px currentColor stroke. Decorative; the link carries the name.
+ */
+export function ArrowRightIcon({ className }: GlyphProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      viewBox="0 0 16 16"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" />
+    </svg>
+  );
+}

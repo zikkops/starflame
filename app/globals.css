@@ -629,12 +629,6 @@
   #main {
     scroll-margin-top: 0;
   }
-
-  /* Hero entrance without a flash (motion.md §5.1). The class is added only by
-     the head script in app/layout.tsx, and only when motion is allowed. */
-  .hero-pending [data-hero-reveal] {
-    opacity: 0;
-  }
 }
 
 /* Section bands (layout-shell.md §4.4, §5): full-bleed, their own stacking
@@ -659,13 +653,150 @@
   [data-band="dusk"] {
     background-image: var(--gradient-haze-dusk);
   }
+  /* A band that ends flush with its content (a hero ending in a feathered image,
+     §5.1 as amended in M2.1) has no bottom padding, except as the last band in
+     its parent: the last section before the footer keeps its bottom padding. */
+  [data-band][data-flush-end] {
+    padding-block-end: 0;
+  }
+  [data-band][data-flush-end]:not(:has(~ [data-band])) {
+    padding-block-end: var(--section-y);
+  }
   /* Two adjacent bands on the same background colour read as one surface: one
      --section-y between them, not two (§5.1). plain and solid are both bg-page.
-     Haze-family bands are never adjacent (§5.2). */
-  :is([data-band="plain"], [data-band="solid"])
+     Haze-family bands are never adjacent (§5.2). The collapse only removes a
+     duplicate: after a flush-ending band (bottom 0) the next keeps its top. */
+  :is([data-band="plain"], [data-band="solid"]):not([data-flush-end])
     + :is([data-band="plain"], [data-band="solid"]),
-  [data-band="sunken"] + [data-band="sunken"] {
+  [data-band="sunken"]:not([data-flush-end]) + [data-band="sunken"] {
     padding-block-start: 0;
+  }
+}
+
+/* The home hero (design/pages/home.md §3.2–§3.4; components/home/HomeHero.tsx).
+   Below lg: the text in the page container, then the image box full bleed (1:1
+   at base, 4:3 at md), 32px apart. From lg: one grid row, the text in the
+   container's columns 1–5 and the box from the column-6 line to the viewport's
+   end edge (5:4, at most 60rem, start-anchored), both centred on the row (the
+   text drops the page container's padding there: lg: utilities). The % in the
+   column tracks resolves against the band's width (the viewport less
+   any classic scrollbar), exactly as the page container's. */
+@layer components {
+  .hero-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    margin-block-start: 2rem;
+    @variant md {
+      aspect-ratio: 4 / 3;
+    }
+    @variant lg {
+      grid-column: 4;
+      justify-self: start;
+      max-inline-size: 60rem;
+      margin-block-start: 0;
+      aspect-ratio: 5 / 4;
+    }
+  }
+  @variant lg {
+    .hero-grid {
+      --hero-content: min(
+        100% - var(--page-inline-start) - var(--page-inline-end),
+        var(--container-content)
+      );
+      --hero-col: calc((var(--hero-content) - 11 * var(--grid-gap)) / 12);
+      display: grid;
+      grid-template-columns:
+        calc(
+          (
+              100% - var(--page-inline-start) - var(--page-inline-end) -
+                var(--hero-content)
+            ) /
+            2 + var(--page-inline-start)
+        )
+        calc(5 * var(--hero-col) + 4 * var(--grid-gap))
+        var(--grid-gap) minmax(0, 1fr);
+      align-items: center;
+    }
+  }
+  /* bg-raised until the photo decodes. The feather: transparent 0 → opaque 8%
+     at the top, opaque 84% → transparent 100% at the bottom; from lg also the
+     start (0 → 24%) and end (92% → 100%) edges, intersected. Static, never
+     animated. The sides at base and md run to the viewport edge. */
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg-raised);
+    --hero-feather-y: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 8%,
+      #000 84%,
+      transparent 100%
+    );
+    mask-image: var(--hero-feather-y);
+    @variant lg {
+      --hero-feather-x: linear-gradient(
+        to right,
+        transparent 0%,
+        #000 24%,
+        #000 92%,
+        transparent 100%
+      );
+      mask-image: var(--hero-feather-y), var(--hero-feather-x);
+      mask-composite: intersect;
+    }
+  }
+  .hero-image picture {
+    display: contents;
+  }
+  /* The crop (§3.2): base keeps the lower part of the 4:5 photo; from md the
+     16:9 photo is cut from its empty start side. */
+  .hero-image img {
+    object-position: 50% 80%;
+    @variant md {
+      object-position: 100% 50%;
+    }
+  }
+  /* The candle glow (§3.4): a square, 60% of the box wide (radius 30%), centred
+     on the candle in the crop, behind the image in the band's isolated context.
+     The translate is static. None below md. */
+  .hero-glow {
+    display: none;
+    @variant md {
+      display: block;
+      position: absolute;
+      z-index: -1;
+      inset-inline-start: 46.7%;
+      inset-block-start: 57%;
+      width: 60%;
+      aspect-ratio: 1 / 1;
+      translate: -50% -50%;
+      background-image: var(--gradient-candle-glow);
+      pointer-events: none;
+    }
+    @variant lg {
+      inset-inline-start: 43.1%;
+    }
+  }
+  /* The entrance (motion.md §5.1, home.md §3.6): CSS only, from the hero's
+     first paint (this stylesheet is render-blocking), no JS at any point. Each
+     [data-hero-reveal] (the eyebrow, the subcopy, the CTA group; never the h1,
+     the image or the glow) rises 24px and fades in once, 700ms enter, 100ms
+     apart by its --reveal-order class (0, 1, 2). backwards holds the `from`
+     state through the delay; afterwards nothing lingers. Not under reduced
+     motion, nor with the M8.8b data-motion="off" set before first paint. */
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-motion="off"]) [data-hero-reveal] {
+      animation: hero-reveal var(--duration-slower) var(--ease-enter) backwards;
+      animation-delay: calc(var(--reveal-order, 0) * var(--stagger-loose));
+    }
+  }
+}
+@keyframes hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-distance-lg));
   }
 }
 

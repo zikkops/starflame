@@ -262,33 +262,6 @@ test("the focus ring is gold-300 immediately after a keyboard Tab", async ({
   );
 });
 
-test(
-  "the head script marks hero-pending only when motion is allowed",
-  { tag: "@motion" },
-  async ({ page }, testInfo) => {
-    // Record classList.add calls from the very first script on the page.
-    await page.addInitScript(() => {
-      const added: string[] = [];
-      (window as Window & { __added?: string[] }).__added = added;
-      const original = DOMTokenList.prototype.add;
-      DOMTokenList.prototype.add = function (...tokens: string[]) {
-        added.push(...tokens);
-        original.apply(this, tokens);
-      };
-    });
-    await page.goto("/");
-    const added = await page.evaluate(
-      () => (window as Window & { __added?: string[] }).__added ?? [],
-    );
-    const reduced = testInfo.project.name.endsWith("-reduced-motion");
-    expect(added.includes("hero-pending")).toBe(!reduced);
-    // The 2500 ms fallback always clears it (there is no hero yet to do so).
-    await expect(page.locator("html")).not.toHaveClass(/hero-pending/, {
-      timeout: 5_000,
-    });
-  },
-);
-
 // Slow fonts force the fallback-then-swap path, which is what could shift layout.
 for (const route of ["/", "/dev/tokens"]) {
   test(`no layout shift from the font swap on ${route}`, async ({

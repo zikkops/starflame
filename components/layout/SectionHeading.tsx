@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { ArrowRightIcon } from "@/components/icons/glyphs";
+
 type SectionHeadingProps = {
   /** The h2's id; pass the same value to Section's `labelledBy`. */
   id: string;
@@ -52,19 +54,7 @@ export function SectionHeading({
             className="inline-flex min-h-(--size-touch) shrink-0 items-center gap-2 type-nav text-link underline decoration-1 underline-offset-[0.2em] transition-colors hover:text-link-hover"
           >
             {link.label}
-            <svg
-              aria-hidden="true"
-              focusable="false"
-              viewBox="0 0 16 16"
-              className="size-4 shrink-0"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" />
-            </svg>
+            <ArrowRightIcon className="size-4 shrink-0" />
           </Link>
         ) : null}
       </div>
