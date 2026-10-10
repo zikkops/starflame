@@ -1,8 +1,16 @@
 # Design tokens (M1.9)
 
-Status: spec, **QA PASSED** (fix round 1), with post-pass minors 1–5, post-pass check minors 1–3, the M1.12 layout-shell registrations and the M1.18 starfield clarifications applied (changelog below). Owner: design-agent. Implemented by tech-agent in M1.11.
+Status: spec, **QA PASSED** (fix round 1), with post-pass minors 1–5, post-pass check minors 1–3, the M1.12 layout-shell registrations, the M1.18 starfield clarifications, the M2.1 newsletter-background note and the M2.1 fix round 2 wording note applied (changelog below). Owner: design-agent. Implemented by tech-agent in M1.11.
 
 ## Changelog
+
+**M2.1 home fix round 2: QA issues 1–7** (2026-10-10). Only issue 7 touches this file. No value changes.
+
+1. §2.6: the places for the one haze band or veil per view are now **examples**, not a fixed list. It said "(hero, brand story, newsletter)", which read as if those three were where haze typically goes; home keeps its hero `solid` and its newsletter on `sunken`, with the brand story as its one haze band (`design/pages/home.md` §2.1). Each page spec decides where its haze goes. No token, value, name or ratio changes.
+
+**M2.1 home fix round 1: the newsletter's background** (2026-10-10). No value changes.
+
+1. §2.5 rule 7 and the §2.3 `bg-haze` use note: the newsletter form may sit on solid **bg-sunken** (`border-control` 4.74:1, U3) as well as solid bg-haze (U14). Rule 7 already listed bg-sunken as an allowed background for form controls; only the sentence naming the newsletter's place said "bg-haze". The home page puts the newsletter on a `sunken` band because its brand story is the page's one haze band (`design/pages/home.md` §2.1). No ratio, value or name changes.
 
 **Post-pass minors from M1.13 review** (2026-10-09). No value changes.
 
@@ -188,10 +196,10 @@ Warning (honey) sits close to gold and ember in hue. It is never the only signal
 |---|---|---|
 | **Background layers** | | |
 | Page | `bg-page` | night-900 `#0B0F24` |
-| Sunken (inputs, footer base) | `bg-sunken` | night-950 `#070914` |
+| Sunken (inputs, footer base, a newsletter band next to the footer) | `bg-sunken` | night-950 `#070914` |
 | Raised surface (cards, scrolled header, dropdowns) | `bg-raised` | night-800 `#131A38` |
 | Overlay / sheet / drawer / modal | `bg-overlay` | night-700 `#1C2550` |
-| Haze band (newsletter, brand-story band) | `bg-haze` | violet-900 `#1E1240` |
+| Haze band (a solid violet section band, e.g. a newsletter band where the page has no other haze nearby) | `bg-haze` | violet-900 `#1E1240` |
 | Scrim behind drawer/modal | `bg-scrim` | `rgba(7, 9, 20, 0.72)` (night-950 at 72%) |
 | Text selection | `bg-selection` | violet-600 `#533A8E`, text stays moon-100 |
 | **Text** | | |
@@ -283,7 +291,7 @@ All gradients are background layers behind content, never over product images. P
    - **Hero:** the product image and its glow sit in an area of plain bg-page. The hero's haze (a dusk band, a veil or a blush) goes elsewhere: below the product area, or a veil/blush positioned in the opposite part of the hero, with no overlap with the glow's circle. **The hero image uses `gradient-candle-glow` only.** It carries no `shadow-glow-candle` or `shadow-glow-candle-soft` on top. The hero spec (M2) shows the arrangement at each breakpoint.
    - **Featured candles in cards (bg-raised):** no gradient glow. The image gets `shadow-glow-candle-soft` instead (§6.2; text pairs T51–T53).
    - **A featured candle band** that wants the full glow places the product on bg-page, outside a card.
-7. **Form controls never sit over a haze gradient.** Inputs, selects, checkboxes and their labels sit only on solid bg-sunken, bg-page, bg-raised, bg-overlay or bg-haze. On bg-sunken (the footer base) `border-control` is 4.74:1 (U3). Over haze worst, `border-control` is 2.08:1 and the bg-sunken fill is 2.27:1, both failing 3:1 (U11, U12). The newsletter form therefore sits on solid bg-haze (U14), not on a dusk band. The primary CTA may sit over haze (U2), without its glow (rule 9). A ghost button may too, but only just (U13, 3.06:1), so prefer solid ground.
+7. **Form controls never sit over a haze gradient.** Inputs, selects, checkboxes and their labels sit only on solid bg-sunken, bg-page, bg-raised, bg-overlay or bg-haze. On bg-sunken (the footer base) `border-control` is 4.74:1 (U3). Over haze worst, `border-control` is 2.08:1 and the bg-sunken fill is 2.27:1, both failing 3:1 (U11, U12). The newsletter form therefore sits on solid ground, **bg-haze (U14) or bg-sunken (U3)**, never on a dusk band. (Home puts it on bg-sunken, because its brand story is the page's one haze band: `design/pages/home.md` §2.1.) The primary CTA may sit over haze (U2), without its glow (rule 9). A ghost button may too, but only just (U13, 3.06:1), so prefer solid ground.
 8. **Status text is never placed over a gradient.** Success, warning, error and info messages sit on a solid background (T42–T45) or on their own status surface (T46–T50). Coral over haze worst is 3.70:1, which fails (X7).
 9. **The CTA glow (`shadow-glow-candle`) is for the primary CTA only, and only over solid ground.**
    - Its **footprint** is the button's box plus **26px** on every side (2px spread + 24px blur). The whole footprint must lie over solid bg-page, bg-sunken, bg-raised, bg-overlay or bg-haze.
@@ -294,7 +302,7 @@ All gradients are background layers behind content, never over product images. P
 
 ### 2.6 How the palette is used on a typical page
 
-On a typical page, roughly 80% is deep night (page, raised cards, sunken footer), so products and their photography carry the colour. About 10–15% is violet and rose haze, used as one soft band or veil per view (hero, brand story, newsletter) and never behind product grids. Starlight gold makes up about 5%: tiny four-point stars, eyebrows, link underlines, focus rings and hairline rules. Candle-glow amber is the rarest colour, at 2% or less: the single primary CTA (Add to bag, Shop the collection) and the warm glow behind a hero candle, so the eye always lands on the product and then the button.
+On a typical page, roughly 80% is deep night (page, raised cards, sunken footer), so products and their photography carry the colour. About 10–15% is violet and rose haze, used as one soft band or veil per view (for example a brand-story band, a newsletter band or a veil in a hero; each page spec decides where) and never behind product grids. Starlight gold makes up about 5%: tiny four-point stars, eyebrows, link underlines, focus rings and hairline rules. Candle-glow amber is the rarest colour, at 2% or less: the single primary CTA (Add to bag, Shop the collection) and the warm glow behind a hero candle, so the eye always lands on the product and then the button.
 
 ---
 
@@ -398,7 +406,7 @@ The glow composites over bg-haze, bg-raised and the haze stack (which QA measure
 | U11 | border-control night-400 | haze worst | 2.08 | **Fail.** Controls never sit over haze (§2.5 rule 7). |
 | U12 | input fill bg-sunken `#070914` | haze worst | 2.27 | **Fail.** Same rule. |
 | U13 | border-ghost night-300 | haze worst | 3.06 | Pass (narrow; prefer solid ground) |
-| U14 | border-control night-400 | bg-haze | 4.13 | Pass (the newsletter form) |
+| U14 | border-control night-400 | bg-haze | 4.13 | Pass (a newsletter form on bg-haze) |
 | U15 | border-ghost night-300 | bg-overlay / bg-haze | 5.16 / 6.07 | Pass |
 | U16 | focus-ring gold-300 | CTA glow worst `#594E55` (the CTA's own ring, inside its glow) | 5.21 | Pass. **This is the lowest ratio the focus ring meets anywhere** (`accessibility.md` §3). |
 

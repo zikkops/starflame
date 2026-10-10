@@ -525,3 +525,24 @@ Entry format:
 - Result: M1 summary + 26 screenshots (http://localhost:3002/m1) shown to the user. The user said "CONTINUE".
 - QA verdict: n/a
 - Notes: The user didn't answer the open questions, so the stated defaults apply: "Bag"; USD; © "Starflames"; starfield kept subtle (0.14 cap); no hand-poured/maker claim (brand-story image stays on hold); Gilded Plum shimmer kept as [confirm with user]; search later; socials hidden. **Blocked on the user:** M2.5a/M2.5b privacy policy text (legal text from the user/adviser) → M2.7 newsletter (consent links to /privacy) waits for it. M2 proceeds with M2.1–M2.6.
+
+## 2026-10-10 M2.1 — Home page spec
+- Agent: design-agent → qa-agent
+- Step: spec → spec review
+- Result: `design/pages/home.md` (859 lines): hero (feathered photo carries the glow; in-page anchor CTAs; LCP option b), featured collections (6 non-link cards until M3.7), bestsellers (2 bestsellers + 2 newest, honest eyebrow; the product card baseline for M3.1; no bag/links until M4/M5), brand story (SVG motif, no maker claims), newsletter omitted until M2.5a/b + M2.7. design-agent's report didn't arrive; the spec file was complete.
+- QA verdict: FAIL (1 blocking: taglines/short descriptions use type-body-sm beyond its 2-line limit; 11 design minors: glow radius vs art-direction §4.3, CTA glow footprint contents, badge order on home, `moodImage` field name, hero hgroup DOM, the SVG stroke at base, the capped-width bleed edge, the h2 for a mixed bestseller row, the eyebrow/subcopy repetition, newsletter band vs art-direction/tokens wording, the collections top-padding rule; 1 tech note: add gsap in M2.2). Contrast, hero pixel sampling, LCP areas, sizes, haze and no-dead-link checks all pass.
+- Notes: Defaults applied for the user questions (no answer yet): hero CTAs stay in-page jumps; newsletter on sunken; the 2+2 bestseller fill; product URL `/products/{slug}` (M4.1 confirms); hero-mobile regeneration pre-launch. Fix round 1 → design-agent.
+
+## 2026-10-10 M2.1 — Home page spec (re-review, fix round 1)
+- Agent: design-agent → qa-agent
+- Step: fix round 1 → spec re-review
+- Result: All 12 round-0 issues addressed (type-body on cards with 2-up bestsellers at md; the glow deviation documented in home + art-direction; the CTA/link 32px gap; the qualifying badge rule; moodImage; hgroup; SVG strokes; the capped box; "Favorites and new flames" / "Shop favorites"; subcopy; newsletter on sunken across tokens/art-direction; the hero bottom-padding override). Tokens values unchanged (c8.js).
+- QA verdict: FAIL (1 blocking: layout-shell §5.1 allows a hero to override only its TOP spacing, and solid→plain collapses the next band's top, so home's bottom-0 override plus the collapse leaves no gap → amend layout-shell §5.1; 6 minors: card-height ranges, the longest description (Ink & Cedar, 6 lines at base), the lg card 218/186, the subcopy 4 lines at 390 (or text-wrap), the 2560 gap 414px, the shot-list/tokens haze wording).
+- Notes: Fix round 2 of max 3 → design-agent. US English confirmed as the site's spelling (catalog.md:37).
+
+## 2026-10-10 M2.1 — Home page spec (close)
+- Agent: design-agent → qa-agent → orchestrator
+- Step: spec → FAIL → fix round 1 → FAIL → fix round 2 → PASS → close
+- Result: `design/pages/home.md`: hero (feathered photo, glow follows the candle, in-page CTAs "Shop favorites"/"Explore collections", LCP = image), featured collections (6 non-link arched cards until M3.7), bestsellers (2 + 2 newest, "Favorites and new flames" when mixed; the product card baseline for M3.1; no bag/links until M4/M5), brand story (SVG motif, no maker claims), newsletter omitted until M2.5a/b + M2.7. layout-shell §5.1 amended (a hero may override top and bottom spacing; the collapse keeps the next band's top when the hero ends at 0). tokens rule 7 / §2.6 and art-direction §4.3/§5 aligned.
+- QA verdict: PASS (3 design minors → design-agent now: the Comet Season card sum 406.7; subcopy line counts at 768/1440 (2 lines, 45ch measure); collections xl sizes 187px).
+- Notes: M2.2 carries: add `gsap` (stack-approved) and log it; fix the M1.13 collapse selector (hero `data-flush-end` so the collections band keeps its top padding) + shell test case; subcopy `max-w-measure-intro` + `text-wrap: pretty`.

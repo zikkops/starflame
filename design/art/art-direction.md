@@ -1,12 +1,22 @@
 # Art direction and shot list (M1.7b)
 
-Status: spec, fix round 1 applied, awaiting QA re-review. The user approved the image spend (2026-10-09); generation starts only after QA passes this shot list. Owner: design-agent.
+Status: spec, fix round 1 applied, awaiting QA re-review. The user approved the image spend (2026-10-09); generation starts only after QA passes this shot list. Owner: design-agent. §4.3 and §5 were updated by the M2.1 home spec's fix round 1, and §5 again by its fix round 2 (changelog below).
 Companion files:
 - [`shot-list.json`](./shot-list.json) is the canonical shot list. It holds every full, exact prompt, alt text, safe zones and the delivery path. The orchestrator pastes prompts from there.
 - [`../copy/catalog.json`](../copy/catalog.json) is the products and collections these images illustrate.
 - [`../system/tokens.md`](../system/tokens.md) (palette, §2.4–2.5 glow and haze rules, §5 arched frame, §6.3 image note) and [`../system/accessibility.md`](../system/accessibility.md) §7 (text over imagery).
 
 ## Changelog
+
+**M2.1 home fix round 2: QA issues 1–7** (2026-10-10). Only issue 7 touches this file. No prompt, alt or delivery change.
+
+1. §5, newsletter: the `newsletter-texture` entry in `shot-list.json` (`notGenerated[].reason`) still says tokens.md §2.5 rule 7 "requires the newsletter form to sit on solid bg-haze". That wording is **superseded**: rule 7 now reads "bg-haze (U14) or bg-sunken (U3)". The entry's conclusion (no photographic or textured band under the form) is unchanged. JSON has no comments and the file isn't reissued for one sentence, so the superseded note lives here, in §5, in the same way as the `glowPlacement` notes (§4.3).
+
+**M2.1 home fix round 1: QA issues 2 and 11** (2026-10-10). No prompt, alt or delivery change.
+
+1. §4.3, hero glow placement: resolved by the home spec (`design/pages/home.md` §3.4). The home hero sets its text beside or above the image on bg-page, never over the left 45%, and the glow sits behind the opaque photo, showing only through the feathered edges. A 12.5% radius would be hidden entirely, so the glow is a circle of radius 30% of the image box (about 21–22.5% of the rendered image width), centred on the real candle; at 1440 it covers about x 39–81% of the source. Its footprint still clears every text box, control and haze layer at md, lg and xl (rule 6). The mobile hero renders no glow element. §4.3 now records this, and the `glowPlacement` notes in `shot-list.json` are the pre-M2 constraint, superseded by home.md §3.4 for the build (the image is already generated, so the JSON is not reissued).
+2. §4.3, mobile hero: the home spec crops `hero-mobile` to a full-bleed 1:1 box (390 × 390 at 390) and never pre-hides the h1 (motion.md §5.1 option b), replacing the "350 × 437, option a" estimate.
+3. §5, newsletter: the form sits on solid bg-haze **or bg-sunken** (tokens.md §2.5 rule 7 allows both; the home page uses bg-sunken because its brand story is the page's one haze band).
 
 **Fix round 1: QA issues 1–8, plus the brand-story hold** (2026-10-09)
 
@@ -193,13 +203,15 @@ Every other prompt is assembled from its blocks with nothing changed.
 
 ### 4.3 Home hero
 
-- **Desktop 16:9** (`hero-desktop`): Moonrise on a terrace balustrade above a lake valley at night. The candle is at about 68% of the width. **The left 45% is a dark, low-detail heading zone** (no moon, no town lights). The edges fall off to near night-900 so the image can be masked into bg-page.
-- **Mobile 4:5** (`hero-mobile`): the same scene, centred, with the top 30% calm. At 390 px it renders about 350 × 437 CSS px, which makes it the LCP element (motion.md §5.1 option a). The heading block (display-1, three lines, about 350 × 139) is far smaller. M2 confirms the final areas.
-- tokens.md §2.5 rule 6: the hero image sits on plain bg-page with `gradient-candle-glow` behind it and no haze overlapping that glow. The photo's own vignette to near-navy makes that seamless. Haze bands go elsewhere in the hero, as the M2 spec decides.
-- **Glow placement, handed to M2 as a constraint** (`glowPlacement` on both hero shots):
-  - **Desktop (md and up):** the glow is sized and positioned **around the candle**, not across the hero. Centre it on the candle (about x 68%, y 60% of the image) and size it so its `closest-side` circle stays inside **about x 55–80% of the image width** (radius about 12.5% of the image width, about 180 CSS px at a 1440 px image). Its whole footprint stays **clear of the heading box in the left 45%**, of every text box and control, and of every haze layer, at md, lg and xl. If M2 crops the image (for example to about 4:3 at 768–1023 px by trimming the left edge), the glow moves and scales with the candle.
-  - **Mobile:** centred on the candle (about x 50%, y 62%), its circle inside the subject zone (about x 25–75%) and never past the image's top or bottom edge, so it can't reach the heading above or below the image.
-  - The M2 spec states the glow element's size and position at each breakpoint and shows that the footprint clears the heading. No box-shadow glow is stacked on the hero image (tokens.md §2.4).
+- **Desktop 16:9** (`hero-desktop`): Moonrise on a terrace balustrade above a lake valley at night. The candle is at about 68% of the width in the prompt (about 60% in the delivered photo, as measured by the home spec). **The left 45% is a dark, low-detail heading zone** (no moon, no town lights). The edges fall off to near night-900 so the image can be masked into bg-page.
+- **Mobile 4:5** (`hero-mobile`): the same scene, centred, with the top 30% calm. The home spec (`design/pages/home.md` §3.2, §3.6) crops it to a **full-bleed 1:1 box** (390 × 390 at 390) and never pre-hides the h1 (motion.md §5.1 option b); the image is the expected LCP element.
+- tokens.md §2.5 rule 6: the hero image sits on plain bg-page with `gradient-candle-glow` behind it and no haze overlapping that glow. The photo's own vignette to near-navy makes that seamless. The home hero has no haze at all (it is a `solid` band; home.md §2.1).
+- **Glow placement (resolved by M2.1, `design/pages/home.md` §3.4):**
+  - **Where the text goes decides the constraint.** The original constraint (a radius of about 12.5% of the image width, inside about x 55–80%) protected a heading set **over** the left 45%. The home spec never puts text over the image: the text sits beside it (lg+) or above it (below lg), on bg-page. The constraint that remains is rule 6 itself: the glow's whole `closest-side` circle stays clear of every text box, control and haze layer.
+  - **Desktop (md and up):** the glow sits **behind** the opaque photo and shows only through the feathered edges (home.md §3.3). It is centred on the real candle (in the box: x 46.7% / y 57% at md, x 43.1% / y 57% at lg and xl) with a **radius of 30% of the image box width**, which is about 22.5% of the rendered image width at md and 21.1% at lg and xl (r ≈ 244 CSS px at 1440, covering about x 39–81% of the source). A 12.5% circle would sit entirely inside the photo's opaque area and never show. At every breakpoint the footprint is at least 100px clear of the text column (home.md §3.4, Clearances).
+  - **Mobile:** no glow element is rendered below md. At 390 the circle couldn't reach the feathered bottom edge without also reaching the top edge next to the text; the photo's own glow carries the hero.
+  - When the image is cropped (4:3 at 768–1023 px, trimming the left edge; 5:4 at lg+), the glow moves and scales with the candle. No box-shadow glow is stacked on the hero image (tokens.md §2.4).
+  - The `glowPlacement` notes in `shot-list.json` record the pre-M2 constraint. For the build, home.md §3.4 and this section supersede them.
 - Never pre-hide the hero image (motion.md §5.1 item 4).
 
 ### 4.4 Brand story (3:2), on hold
@@ -213,7 +225,8 @@ Every other prompt is assembled from its blocks with nothing changed.
 - **Collection, lifestyle and catalog images:** no text over them; headings sit on solid ground next to the image.
 - **Hero and brand story** have a reserved dark zone (left 45% / left 40%). The preferred layout puts text beside the image on solid bg-page. If M2 or the brand-story spec places text over the zone, accessibility.md §7 applies: a night-900 scrim of at least 60% under the text, and the spec states the ratio against the lightest pixel of that zone in the final image. Text never sits over the candle, the town lights, the moon or any busy area.
 - Status text, form controls and text-muted are never placed over photography (tokens.md §2.5 rules 4, 7, 8).
-- **No newsletter texture.** The newsletter form must sit on solid bg-haze (tokens.md §2.5 rule 7, U11–U12), so a photographic band under it is not allowed. Its atmosphere comes from CSS haze and star motifs placed away from the form.
+- **No newsletter texture.** The newsletter form must sit on solid ground, **bg-haze or bg-sunken** (tokens.md §2.5 rule 7; U14, U3; over a haze gradient it fails, U11–U12), so a photographic band under it is not allowed. On home it sits on bg-sunken (`design/pages/home.md` §2.1, §8). Its atmosphere comes from CSS haze or star motifs placed away from the form.
+  - **Superseded wording in the JSON:** the `newsletter-texture` entry in `shot-list.json` (`notGenerated[].reason`) still says rule 7 "requires the newsletter form to sit on solid bg-haze". For every later spec and build, this section and rule 7 as it now reads (bg-haze or bg-sunken) supersede that sentence. The entry's conclusion, that no texture is generated for the newsletter, stands.
 
 ## 6. Shot list (summary)
 

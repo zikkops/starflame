@@ -38,7 +38,7 @@ Visuals first (user request, 2026-10-09). Two parallel tracks; within a track, o
 
 ## M2 Home
 
-- [ ] M2.1 (D) Home page spec (section order, copy, motion)
+- [x] M2.1 (D) Home page spec (section order, copy, motion)
 - [ ] M2.2 (T) Hero
 - [ ] M2.3 (T) Featured collections — if this is the first page that reads a repository, enable `scripts/build-preflight.mjs` in `prebuild` (M1.8 hand-off; otherwise M2.4 does)
 - [ ] M2.4 (T) Bestsellers (query + index) — enable `scripts/build-preflight.mjs` in `prebuild` if M2.3 did not (M1.8 hand-off)

@@ -1,11 +1,15 @@
 # Layout shell (M1.12)
 
-Status: spec, **QA PASSED**, with post-pass minors 1–10 and the M1.18 starfield wording update applied (changelog below). Owner: design-agent. Implemented by tech-agent in M1.13.
+Status: spec, **QA PASSED**, with post-pass minors 1–10, the M1.18 starfield wording update and the M2.1 home fix round 2 amendment to §5.1 applied (changelog below). Owner: design-agent. Implemented by tech-agent in M1.13.
 Depends on [`tokens.md`](../system/tokens.md) (§2.5 rules 3, 4, 7–9; §4 semantic spacing; §7 focus; §8 z-index; §9 breakpoints, containers and the layout-shell variables), [`typography.md`](../system/typography.md) (§3 wordmark, §4 scale, §5 measures, §6.1 heading hierarchy), [`motion.md`](../system/motion.md) (§1, §6) and [`accessibility.md`](../system/accessibility.md) (§3, §5–§8). The implemented token names are taken from `app/globals.css` as built in M1.11 (`design/tech/M1.11-tokens-fonts.md`).
 
 Plugs in later: the header ([`header.md`](./header.md), M1.14), the footer ([`footer.md`](./footer.md), M1.16) and the starfield ([`starfield.md`](./starfield.md), M1.18). This file only defines their **slots and contracts**. Their content, states and motion belong to their own specs.
 
 ## Changelog
+
+**M2.1 home fix round 2: QA issues 1–7** (2026-10-10). Only issue 1 touches this file.
+
+1. §5.1: a hero may now override its own **top and bottom** spacing (it said "top" only), and the collapse rule no longer zeroes the next band's top padding when the band before it already ends at 0. The intent is unchanged: exactly one `--section-y` between two adjacent bands of the same colour. Without this, a hero that ends in a feathered image (padding-bottom 0) followed by a plain band would have had no gap at all (`design/pages/home.md` §2.3). A build note for the collapse selector is added. Checked every spec that relies on §5.1: header.md §8.3 (a hero's top spacing only), footer.md §4.1 and §7 here (the last section keeps its bottom padding; on home the hero is never the last section), starfield.md §13.1 and §13.3 (the dev pages have no hero; their plain → solid collapse is unchanged), and the M1.13 shell test (no hero in it). None relied on the old wording. No value changes.
 
 **Post-pass minors from M1.13/M1.15 reviews** (2026-10-09)
 
@@ -323,8 +327,9 @@ Variants:
 ### 5.1 Vertical spacing
 
 - Every section band has `padding-block: var(--section-y)`: **64 / 80 / 96 / 128px** at base / md / lg / xl.
-- **Two adjacent bands with the same background colour collapse:** the second drops its top padding (`padding-block-start: 0`), so they are separated by exactly one `--section-y`, not two. "Same background colour" means `plain` or `solid` next to `plain` or `solid` (both are bg-page; `plain` only lets the stars show), or `sunken` after `sunken`. (Two haze-family bands are never adjacent, §5.2.) Between bands of different colours (for example `plain` → `sunken`, or anything next to `haze` or `dusk`), both paddings stay: the band's edge is visible, so the space reads as "content to edge" plus "edge to content".
-- The first section in `main` starts `--section-y` below the header. A hero may override its own top spacing (M2.1); nothing else does.
+- **Two adjacent bands with the same background colour collapse:** the second drops its top padding (`padding-block-start: 0`), so they are separated by exactly one `--section-y`, not two. "Same background colour" means `plain` or `solid` next to `plain` or `solid` (both are bg-page; `plain` only lets the stars show), or `sunken` after `sunken`. (Two haze-family bands are never adjacent, §5.2.) The collapse only removes a duplicate: if the first band already ends at 0 (a hero that overrides its bottom spacing, next point), the second keeps its top padding, so there is still exactly one `--section-y` between them. Between bands of different colours (for example `plain` → `sunken`, or anything next to `haze` or `dusk`), both paddings stay: the band's edge is visible, so the space reads as "content to edge" plus "edge to content".
+- The first section in `main` starts `--section-y` below the header. A hero may override its own top and bottom spacing (M2.1); no other band does.
+  - Build note (tech-agent's call): mark a band whose bottom padding is overridden to 0 (for example `data-flush-end` on the hero) and leave the band that follows it out of the collapse selector. The shell's band-collapse test gains that case: a flush-ending band followed by a `plain` band keeps the plain band's top padding at `--section-y`.
 - The last section before the footer keeps its bottom padding. The footer's own top padding is M1.16's.
 - Inside a section, spacing comes from the spacing scale: eyebrow → heading step 3 (12px), heading → intro step 4 (16px), heading block → content step 12 (48px) (typography.md §4 notes, tokens.md §4).
 
@@ -629,7 +634,7 @@ Notes:
 
 ## 14. IP guardrail
 
-Every string in this spec (§11) is plain, generic interface language: "Skip to content", "Primary", "Menu", "Footer", "Legal", "Breadcrumb", "Starflames on social media", and the error and not-found messages and titles. The only name is the brand's own. Token, band and component names (gutter, section, band, plain, solid, sunken, haze, dusk, starfield, shell) are generic English words. No character, place, court or book names, no author name, no quotes or paraphrases, no invented terms and no "Court of …" style combinations. Re-read for this after the post-pass minors and confirmed.
+Every string in this spec (§11) is plain, generic interface language: "Skip to content", "Primary", "Menu", "Footer", "Legal", "Breadcrumb", "Starflames on social media", and the error and not-found messages and titles. The only name is the brand's own. Token, band and component names (gutter, section, band, plain, solid, sunken, haze, dusk, starfield, shell) are generic English words, and so is the build-note attribute `data-flush-end`. No character, place, court or book names, no author name, no quotes or paraphrases, no invented terms and no "Court of …" style combinations. Re-read for this after the post-pass minors and again after the M2.1 fix round 2 amendment, and confirmed.
 
 ## 15. Open questions
 
