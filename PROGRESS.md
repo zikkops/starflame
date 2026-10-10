@@ -574,3 +574,10 @@ Entry format:
 - Result: The user asked to "go deeper in everything else" after the visual site. Added a "Phase D in depth" block to TASKS.md (D1 accounts, D2 bag + inventory, D3 checkout/orders/state machine/shipping/tax, D4 admin audit + image pipeline, D5 newsletter double opt-in + consent, D6 hardening: security headers, App Check, axe audit, perf budgets, errors, backups, deploy plan). Full QA rigor on every Phase D task; the faster QA mode is not adopted.
 - QA verdict: n/a
 - Notes: Items needing user approval are flagged: Stripe, App Check on a real project, any monitoring service, deploy.
+
+## 2026-10-10 — M2.2 Hero: spec fix round 1 → PASS
+- Agent: tech-agent (spec fix), design-agent (CSS entrance minors), qa-agent (re-review)
+- Step: spec review
+- Result: design/tech/M2.2-hero.md revised to the CSS-only first-paint entrance (motion.md §5.1): @keyframes hero-reveal, [data-hero-reveal] with --reveal-order classes, gated on prefers-reduced-motion: no-preference and html:not([data-motion="off"]). Retired app/hero-pending.ts, the head script, suppressHydrationWarning and the .hero-pending rule. gsap dropped from M2.2 (moves to M2.3). Probe (slow 4G, 4× CPU, 390, /dev/hero, 5 runs): FCP 864 ms, last reveal animation end FCP + 889 ms (882–889; ≤ 1,000 ms), animationend FCP + 907 ms, LCP hero img 1,764 ms, CLS 0. First-load JS on / is unchanged from M1 (190,082 B gzipped). Prototype e2e: 266 passed / 34 skipped, @perf 15 passed.
+- QA verdict: PASS (spec), 3 non-blocking minors: (1) [design] home.md §3.9 sizes 134vw over-fetches w=3840 at exactly 768@2x; 133.3vw would fetch w=2048 (−33%). (2) [tech] e2e 15's 1.5 s DOMContentLoaded bound is a wall-clock budget, so move it to @perf. (3) [tech] Known flake: one HTTP 500 for a static chunk from next start in prototype run 1 (shell.spec 400% zoom), not reproduced; investigate if it recurs.
+- Notes: PUSHBACK 1 resolved. No new dependencies.
