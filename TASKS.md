@@ -103,7 +103,7 @@ Visuals first (user request, 2026-10-09). Two parallel tracks; within a track, o
 
 - [x] M3.1 (D) Product card spec (image arch, price, variants hint, badges, quick add)
 - [ ] M3.2 (T) Implement product card
-- [ ] M3.3 (D) Shop page spec: filters (scent family, type, size, collection, price), sort, empty state, mobile filter sheet
+- [x] M3.3 (D) Shop page spec: filters (scent family, type, size, collection, price), sort, empty state, mobile filter sheet
 - [ ] M3.4 (T) Filter query design: Firestore queries, indexes, pagination, URL params
 - [ ] M3.5 (T) Implement shop page
 - [ ] M3.6 (D) Collection page spec — includes a `/collections` index page; routes are `/collections/[slug]` (route registry: footer.md §3.2.1)

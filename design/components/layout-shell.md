@@ -7,6 +7,10 @@ Plugs in later: the header ([`header.md`](./header.md), M1.14), the footer ([`fo
 
 ## Changelog
 
+**M3.3 shop clarification** (2026-10-10)
+
+1. §2.1: "Overlays never render inside main" now reads "never paint inside main's stacking context"; a `showModal()` dialog may sit inside `main` in the DOM (the shop filter sheet). The intent is unchanged.
+
 **Post-pass minors from the hero follow-up review** (2026-10-10)
 
 1. §13.3: the note that said to keep `<html suppressHydrationWarning>` and the hero-pending script untouched contradicted motion.md §5.1 item 8. It now says the hero-pending script is retired in M2.2, and `suppressHydrationWarning` stays only while a head script changes `<html>`. Wording only.
@@ -94,7 +98,7 @@ Every customer-facing page renders this order. Numbers are DOM order.
 Rules:
 - **One of each landmark**: one banner, one main, one contentinfo. No `role` attributes are needed; the native elements carry them.
 - `main` and `footer` are **not** wrapped in an extra layout `<div>` that would break the "direct child of body" rule for the header and footer. (`<body>` is the flex column, §4.6.)
-- **Overlays never render inside `<main>`.** `<main>` is a stacking context at `--z-content` (§2.3), so a drawer or toast inside it could never rise above the header. Drawers, sheets, the mobile menu and modals either use `<dialog>.showModal()` (top layer, tokens.md §8) or render in the overlay slot.
+- **Overlays never paint inside `<main>`'s stacking context.** `<main>` is a stacking context at `--z-content` (§2.3), so a drawer or toast positioned inside it could never rise above the header. Drawers, sheets, the mobile menu and modals either use `<dialog>.showModal()` (top layer, tokens.md §8; the `<dialog>` element may then sit anywhere in the DOM, including inside `main`, because the top layer paints above every stacking context, e.g. the shop filter sheet, shop.md §3.2) or render in the overlay slot.
 
 ### 2.2 Headings
 
