@@ -6,10 +6,16 @@ Builds on [`layout-shell.md`](../components/layout-shell.md) (§4 Container and 
 
 ## Changelog
 
+**Post-pass minors 1–3** (2026-10-10)
+
+1. §4.4: the base Comet Season card sum is corrected to 222.7 + 16 + 30.9 + 27.5 + 4 + 105.6 = **406.7** (it read 407.7), so the base card-height range is **≈ 349–407** (in the §4.4 table, its working, and the fix round 2 item 2 entry below).
+2. §3.2, §3.6, §11.1: the subcopy line counts at 768 and 1440 assumed a 450px measure. `max-w-measure-intro` is 45ch, and Jost's "0" is 0.6em wide, so the measure is 27em: about 502px at 768, and 540px at 1440 (20px), capped by the 514px column. The subcopy therefore sets in **2 lines** at 768 and 1440, not 3. The §3.6 subcopy area at 1440 is now **514 × 64 ≈ 32,900**, and the 1440 text-block height is **≈ 350px** (was 382). The 390 geometry, the 1024 heights and e2e check 12 are unchanged.
+3. §4.4: the collections `sizes` entry for 90rem and wider is **`187px`** (was `190px`), matching the 186.7px card.
+
 **Fix round 2: QA issues 1–7** (2026-10-10)
 
 1. §2.3, §14: layout-shell.md §5.1 is amended (its changelog has the entry): "A hero may override its own top and bottom spacing (M2.1); no other band does", and the collapse rule now keeps the next band's top padding when the band before it already ends at 0. §2.3 quotes both sentences exactly. §14 asks for the collapse selector to skip the band after the flush-ending hero, plus a shell test case. No other spec relied on the old wording (checked: header.md §8.3, footer.md §4.1, layout-shell §7, starfield.md §13.1 and §13.3, the M1.13 shell test).
-2. §4.4: the card-height row is recomputed from its own formula, with the working under the table: **≈ 349–408** (base), **395–454** (md), **504–536** (lg), **388–450** (xl). The Limited badge is about 23–24px tall (eyebrow line + padding + border), so badge + gap is about 31–32px. "About 450px of cards" at xl still holds (449.9). The longest taglines are Moonlit Terrace's and Comet Season's, 55 characters each.
+2. §4.4: the card-height row is recomputed from its own formula, with the working under the table: **≈ 349–407** (base), **395–454** (md), **504–536** (lg), **388–450** (xl). The Limited badge is about 23–24px tall (eyebrow line + padding + border), so badge + gap is about 31–32px. "About 450px of cards" at xl still holds (449.9). The longest taglines are Moonlit Terrace's and Comet Season's, 55 characters each.
 3. §5.2, §6.1: the longest short description on home is **Ink & Cedar's (71 characters)**; Moonrise's is 69. At base (about 17 characters per line) it wraps to 6 lines, so base cards reach **≈ 498px** (the seed rows are ≈ 470 and ≈ 471), and §6.1 now says 2–6 lines. Every bestseller card height is recomputed, with the working under the table.
 4. §5.2, §6.5: at lg the bestseller card is (944 − 3 × 24) / 4 = **218px**, its image **186 × 232.5**, and the `sizes` check reads **186**.
 5. §3.2, §11.1, §14, §15: the hero subcopy is shortened from 110 to **93 characters** ("Inspired by moonlit terraces, starry reading rooms and still lakes, for long, quiet evenings."), so it sets in **3 lines** at 390 with room to spare (it stays at 3 lines down to 32 characters per line). The 390 geometry in §3.2, the LCP areas in §3.6 and e2e check 11 therefore stand as written; new e2e check 12 guards the 3 lines. The 1024 and 1440 text-block heights are recomputed (≈ 417 / 493 and ≈ 382).
@@ -203,11 +209,11 @@ This is the order the user saw and liked in the mockup. It is kept.
 
 - **The capped box (the end edge from about 1733px).** Above 1440 the Container centres at 1280, so its content box starts at `50vw − 640px`, and the col-6 line sits five columns and five gaps further on (5 × 77.33 + 5 × 32 = 546.7px), at `50vw − 93.3px`. The box would be `50vw + 93.3px` wide. It reaches the 60rem (960px) cap at 2 × (960 − 93.3) ≈ **1733px**. From there the box **stays anchored at its start edge** (the col-6 line, 32px after the text column), so the text-to-image gap, the glow's clearance from the text and the candle's place next to the heading never change. Its **end edge stops short of the viewport** by `50vw + 93.3px − 960px`: about **93px at 1920** and **413px at 2560** (QA's 414 rounds the 93.3px offset up to 94). That strip is plain bg-page, and the box's end feather (opaque 92% → transparent 100%, §3.3) already fades the photo into it, so there is no hard edge. The image is not stretched or recentred.
 - **Text widths:** h1 `max-w-measure-heading` (18ch), subcopy `max-w-measure-intro` (45ch), both set on the text element itself (typography.md §5).
-  - Expected lines: the h1 is 2 lines at 390, 768 and 1440, and may be 3 at 1024. **The subcopy is 3 lines at every width from 390** (93 characters; the line breaks and the margin are worked in §11.1). At 320 it may take 4, which nothing depends on.
+  - Expected lines: the h1 is 2 lines at 390, 768 and 1440, and may be 3 at 1024. **The subcopy is 3 lines at 390 and 1024, and 2 lines at 768 and 1440** (93 characters; the measures, the line breaks and the margin are worked in §11.1). At 320 it may take 4, which nothing depends on.
   - Nothing is truncated, and nothing depends on a line count.
 - **Text block height:**
   - **390: about 371px** (eyebrow 17 + 12 + h1 92 + 16 + subcopy 86 + 24 + CTA 48 + 32 + link 44).
-  - **1440: about 382px** (eyebrow 18 + 12 + h1 168 + 16 + subcopy 96 + 24 + CTA row 48). The box is 651px tall, so it fits with room to spare.
+  - **1440: about 350px** (eyebrow 18 + 12 + h1 168 + 16 + subcopy 64, 2 lines + 24 + CTA row 48). The box is 651px tall, so it fits with room to spare.
   - **1024: about 417px** with a 3-line h1 (eyebrow 18 + 12 + h1 207 + 16 + subcopy 92 + 24 + CTA row 48), and **about 493px** if the text link wraps below the CTA (+ 32 + 44). The row needs about 384px (CTA 171 + 32 + link 181) of the 379px column, so it may wrap there. The one-row case fits the 465px box.
   - If the text is taller than the box (the wrapped link at 1024, or the text-spacing override), the band grows, both columns stay centred, and the image keeps its ratio.
 - **First view:**
@@ -272,7 +278,7 @@ Areas, for the build review (option (a) would also hold, but (b) removes the ris
 | Width | Hero image (rendered box) | In the first viewport | h1 text block | Subcopy block |
 |---|---|---|---|---|
 | 390 | 390 × 390 = **152,100 px²** | 390 × 173 = **67,470** at 664 tall; the whole box at 844 | 350 × 92 = **32,200** | 350 × 86 ≈ 30,100 (3 lines) |
-| 1440 | 814 × 651 = **529,914 px²** | all of it | 514 × 168 ≈ 86,350 | 450 × 96 ≈ 43,200 (3 lines) |
+| 1440 | 814 × 651 = **529,914 px²** | all of it | 514 × 168 ≈ 86,350 | 514 × 64 ≈ 32,900 (2 lines) |
 
 The image is the expected LCP element at both widths. Whatever the build review measures, nothing that could be the LCP element is pre-hidden.
 
@@ -393,12 +399,12 @@ Rendered with Next's `getImageProps()` art-direction pattern: one call per sourc
 | Tagline lines (seed; the longest are Moonlit Terrace's and Comet Season's, 55 characters each) | 3–4 (79.2–105.6px) | 2–3 (55.2–82.8px) | 2 (56.8px) | 3–4 (89.1–118.8px) |
 | Name, 1 line (`type-h4` size × 1.25) | 27.5 | 28.4 | 29.0 | 30.0 |
 | Limited badge + 8px gap (Comet Season only; eyebrow size × 1.3 + 4 padding + 2 border) | 22.9 + 8 = 30.9 | 23.4 + 8 = 31.4 | 23.7 + 8 = 31.7 | 24.2 + 8 = 32.2 |
-| Card height (frame + 16 + [badge + 8] + name + 4 + tagline) | ≈ 349–408 | ≈ 395–454 | ≈ 504–536 | ≈ 388–450 |
+| Card height (frame + 16 + [badge + 8] + name + 4 + tagline) | ≈ 349–407 | ≈ 395–454 | ≈ 504–536 | ≈ 388–450 |
 | Rows for 6 cards | 3 | 2 | 2 | 1 |
 
 Working for the card-height row (sizes interpolated as typography.md §4: body 16 → 18px is 16.72 at 768 and 17.21 at 1024; h4 22 → 24px is 22.72 and 23.21; eyebrow 13 → 14px is 13.36 and 13.60). The shortest card has no badge and the fewest tagline lines; the tallest is Comet Season (Limited badge, the most lines):
 
-- **base:** 222.7 + 16 + 27.5 + 4 + 79.2 = **349.4**; Comet Season 222.7 + 16 + 30.9 + 27.5 + 4 + 105.6 = **407.7**.
+- **base:** 222.7 + 16 + 27.5 + 4 + 79.2 = **349.4**; Comet Season 222.7 + 16 + 30.9 + 27.5 + 4 + 105.6 = **406.7**.
 - **md:** 291.6 + 16 + 28.4 + 4 + 55.2 = **395.2**; Comet Season 291.6 + 16 + 31.4 + 28.4 + 4 + 82.8 = **454.2**.
 - **lg:** 398.2 + 16 + 29.0 + 4 + 56.8 = **504.0**; Comet Season adds the badge: 504.0 + 31.7 = **535.7**.
 - **xl:** 248.9 + 16 + 30.0 + 4 + 89.1 = **388.0**; Comet Season 248.9 + 16 + 32.2 + 30.0 + 4 + 118.8 = **449.9**.
@@ -408,7 +414,7 @@ Working for the card-height row (sizes interpolated as typography.md §4: body 1
 - The cards get narrower from lg (299) to xl (187), and that is intended. Names still fit on one line at 187px ("Moonlit Terrace" at 24px is about 165px). Taglines wrap to 3–4 short lines of about 20 characters at 18px. That is a narrow measure, but each tagline is a single short sentence, and `text-wrap: pretty` avoids one-word last lines.
 - Character estimates use Jost's average lowercase advance of about 0.51em (including the 0.01em tracking). Line counts are guidance only: nothing depends on them, and nothing is clipped.
 - With fewer than 6 collections the grid packs from the start and nothing is centred or stretched.
-- **`sizes`:** `(min-width: 90rem) 190px, (min-width: 64rem) calc((100vw - 128px) / 3), (min-width: 48rem) calc((100vw - 112px) / 3), calc(50vw - 28px)`.
+- **`sizes`:** `(min-width: 90rem) 187px, (min-width: 64rem) calc((100vw - 128px) / 3), (min-width: 48rem) calc((100vw - 112px) / 3), calc(50vw - 28px)`.
   - Check: at 390, 167px; at 768, 218.7; at 1024, 298.7; at 1440 and wider, 187.
 - `loading="lazy"` (the next/image default). No `priority`.
 
@@ -850,7 +856,7 @@ Notes:
 - **Its length is set by the 390 layout (fix round 2).** It is **93 characters** (it was 110; "mountain" and "at home" are gone), so it sets in **3 lines** at 390, as the §3.2 geometry and the §3.6 areas assume:
   - At 390 its measure is the 350px content width (45ch at 18px is wider). At the 0.51em estimate that is about 38 characters per line: "Inspired by moonlit terraces, starry" (36) / "reading rooms and still lakes, for" (34) / "long, quiet evenings." (21).
   - **Margin:** it still sets in 3 lines down to 32 characters per line, that is an average advance of up to 0.61em (20% wider than the estimate): "Inspired by moonlit terraces," (29) / "starry reading rooms and still" (30) / "lakes, for long, quiet evenings." (32). So the real Jost metrics or the size-adjusted fallback don't add a fourth line.
-  - At 1024 (379px column, 19.2px, about 38 per line) it is also 3 lines, and at 768 and 1440 (about 44 per line) 3 lines too.
+  - At 1024 (379px column, 19.2px, about 38 per line) it is also 3 lines. At 768 and 1440 the 45ch measure sets the width: Jost's "0" is 0.6em, so 45ch is 27em, about 502px at 768 (about 53 characters per line) and 540px at 1440 (20px), capped by the 514px column (about 50 per line). So it sets in **2 lines** there (post-pass minor 2).
   - `text-wrap: pretty` (typography.md §5) may move a word between the last lines; it doesn't add a line in current engines, and e2e check 12 (§14) guards the 390 case. At 320 it may take 4 lines; nothing depends on that.
 
 ### 11.2 From the data (catalog.json, not repeated here)
